@@ -2,7 +2,7 @@
 	"name": "DataverseAppointments",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Dataverse_CRM",
+			"referenceName": "Dataverse_CRM1",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
