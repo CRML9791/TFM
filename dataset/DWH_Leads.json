@@ -1,0 +1,89 @@
+{
+	"name": "DWH_Leads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_leadid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "createdon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ownwer",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "leadsource",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "statuscode",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "industry",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "territory",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "rating",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "employees",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "revenue",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "haskey",
+				"type": "bigint",
+				"precision": 19
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "leads_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

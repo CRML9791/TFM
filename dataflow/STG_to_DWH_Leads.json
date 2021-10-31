@@ -1,0 +1,68 @@
+{
+	"name": "STG_to_DWH_Leads",
+	"properties": {
+		"folder": {
+			"name": "2_STG_to_DWH"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_Leads",
+						"type": "DatasetReference"
+					},
+					"name": "STG"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Leads",
+						"type": "DatasetReference"
+					},
+					"name": "DWH"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_Leads",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_Leads",
+						"type": "DatasetReference"
+					},
+					"name": "Nuevos"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Leads",
+						"type": "DatasetReference"
+					},
+					"name": "Actualizaciones"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CrearHASH"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "Split"
+				},
+				{
+					"name": "Insertar"
+				},
+				{
+					"name": "Actualizar"
+				}
+			],
+			"script": "source(output(\n\t\tSK_leadid as integer,\n\t\tBK_leadid as string,\n\t\tcreatedon as timestamp,\n\t\townerid as string,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tcustom_territorioid as string,\n\t\tcustom_productid as string,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\tHASHKEY as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 10,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nsource(output(\n\t\tSK_leadid as integer,\n\t\tBK_leadid as string,\n\t\tcreatedon as timestamp,\n\t\townerid as string,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tcustom_territorioid as string,\n\t\tcustom_productid as string,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\tHASHKEY as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 10,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nSTG derive(STGHASH = crc32(512,upper(toString(ownerid)),toString(leadsource),toString(statuscode),toString(industry),toString(modifiedon),upper(toString(custom_territorioid)),upper(toString(custom_productid)),toString(rating),toString(employees),toInteger(toString(revenue),'############'))) ~> CrearHASH\nCrearHASH, DWH lookup(STG@SK_leadid == DWH@SK_leadid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != STGHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_leadid = Split@Nuevos@SK_leadid,\n\t\tcreatedon = Split@Nuevos@createdon,\n\t\townwer,\n\t\tleadsource = Split@Nuevos@leadsource,\n\t\tstatuscode = Split@Nuevos@statuscode,\n\t\tindustry = Split@Nuevos@industry,\n\t\tmodifiedon = Split@Nuevos@modifiedon,\n\t\tterritory,\n\t\tproduct,\n\t\trating = Split@Nuevos@rating,\n\t\temployees = Split@Nuevos@employees,\n\t\trevenue = Split@Nuevos@revenue,\n\t\thaskey = STGHASH\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_leadid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_leadid = Split@Actualizaciones@SK_leadid,\n\t\tcreatedon = Split@Actualizaciones@createdon,\n\t\townwer,\n\t\tleadsource = Split@Actualizaciones@leadsource,\n\t\tstatuscode = Split@Actualizaciones@statuscode,\n\t\tindustry = Split@Actualizaciones@industry,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon,\n\t\tterritory,\n\t\tproduct,\n\t\trating = Split@Actualizaciones@rating,\n\t\temployees = Split@Actualizaciones@employees,\n\t\trevenue = Split@Actualizaciones@revenue,\n\t\thaskey = STGHASH\n\t)) ~> Actualizaciones"
+		}
+	}
+}
