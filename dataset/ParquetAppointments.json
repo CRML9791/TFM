@@ -1,6 +1,10 @@
 {
 	"name": "ParquetAppointments",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "rmldatalake",
+			"type": "LinkedServiceReference"
+		},
 		"folder": {
 			"name": "1 Parquet"
 		},
