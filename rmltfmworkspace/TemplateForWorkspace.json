@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'DWH'"
 		},
-		"Dataverse_CRM_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'Dataverse_CRM'"
-		},
 		"Dataverse_CRM1_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Dataverse_CRM1'"
@@ -31,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'STG Base'"
 		},
+		"rmldatalake_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'rmldatalake'"
+		},
 		"rmltfmworkspace-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'rmltfmworkspace-WorkspaceDefaultSqlServer'"
@@ -39,13 +39,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'tfmworkspace-WorkspaceDefaultSqlServer'"
 		},
-		"Dataverse_CRM_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "admin@CRM371482.onmicrosoft.com"
-		},
 		"Dataverse_CRM1_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "admin@CRM371482.onmicrosoft.com"
+		},
+		"rmldatalake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://rmldatalakestoragegen2.dfs.core.windows.net/"
 		},
 		"rmltfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
@@ -14284,7 +14284,6 @@
 																}
 															},
 															"enableStaging": false,
-															"validateDataConsistency": false,
 															"translator": {
 																"value": "@json(item().CopyActivitySettings).translator",
 																"type": "Expression"
@@ -14428,7 +14427,6 @@
 																}
 															},
 															"enableStaging": false,
-															"validateDataConsistency": false,
 															"translator": {
 																"value": "@json(item().CopyActivitySettings).translator",
 																"type": "Expression"
@@ -14554,7 +14552,6 @@
 														}
 													},
 													"enableStaging": false,
-													"validateDataConsistency": false,
 													"translator": {
 														"value": "@json(item().CopyActivitySettings).translator",
 														"type": "Expression"
@@ -15806,10 +15803,6 @@
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
-					"type": "LinkedServiceReference"
-				},
 				"parameters": {
 					"cw_entityName": {
 						"type": "String"
@@ -15828,15 +15821,17 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetAccountsOk')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15846,7 +15841,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "accounts",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -15899,13 +15894,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetAppointments')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15915,19 +15916,25 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "appointments",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetEmails')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15937,19 +15944,25 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "emails",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetGoals')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15959,19 +15972,25 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "goals",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetLeads')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15981,7 +16000,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "leads",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16042,13 +16061,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetOpportunity')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16058,19 +16083,25 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "opportunities",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetOpportunityProduct')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16080,19 +16111,25 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "opportunityproducts",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetPhoneCall')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16102,7 +16139,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "phonecalls",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16149,13 +16186,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetProduct')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16165,7 +16208,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "products",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16202,13 +16245,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetProductFamily')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16218,7 +16267,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "productfamilies",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16241,13 +16290,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetSystemManagers')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16257,7 +16312,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "systemusersmanagers",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16276,13 +16331,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetSystemUsers')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16292,7 +16353,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "systemusers",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16311,13 +16372,19 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetTask')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16327,19 +16394,25 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "tasks",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetTerritories')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rmldatalake",
+					"type": "LinkedServiceReference"
+				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16349,7 +16422,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "territories",
-						"fileSystem": "tfmfilesystem"
+						"fileSystem": "files"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -16372,7 +16445,9 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/rmldatalake')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/STG_Accounts')]",
@@ -17485,32 +17560,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Dataverse_CRM')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "CommonDataServiceForApps",
-				"typeProperties": {
-					"deploymentType": "Online",
-					"serviceUri": "https://org14605eab.crm4.dynamics.com/",
-					"authenticationType": "Office365",
-					"username": "[parameters('Dataverse_CRM_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('Dataverse_CRM_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Dataverse_CRM1')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -17583,6 +17632,29 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('STG Base_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/rmldatalake')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('rmldatalake_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('rmldatalake_accountKey')]"
+					}
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",

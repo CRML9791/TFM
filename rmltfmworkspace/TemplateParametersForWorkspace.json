@@ -8,9 +8,6 @@
 		"DWH_connectionString": {
 			"value": ""
 		},
-		"Dataverse_CRM_password": {
-			"value": ""
-		},
 		"Dataverse_CRM1_password": {
 			"value": ""
 		},
@@ -23,17 +20,20 @@
 		"STG Base_connectionString": {
 			"value": ""
 		},
+		"rmldatalake_accountKey": {
+			"value": ""
+		},
 		"rmltfmworkspace-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
 		"tfmworkspace-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
-		"Dataverse_CRM_properties_typeProperties_username": {
-			"value": "admin@CRM371482.onmicrosoft.com"
-		},
 		"Dataverse_CRM1_properties_typeProperties_username": {
 			"value": "admin@CRM371482.onmicrosoft.com"
+		},
+		"rmldatalake_properties_typeProperties_url": {
+			"value": "https://rmldatalakestoragegen2.dfs.core.windows.net/"
 		},
 		"rmltfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://rmldatalakestoragegen2.dfs.core.windows.net"
