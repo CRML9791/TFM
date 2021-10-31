@@ -1,10 +1,6 @@
 {
 	"name": "MetadataDrivenCopyTask_c3b_SourceDS",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "Dataverse_CRM",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"cw_entityName": {
 				"type": "String"

@@ -1,10 +1,6 @@
 {
 	"name": "MetadataDrivenCopyTask_c3b_DestinationDS",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "RAWParquet",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"cw_fileName": {
 				"type": "String"
