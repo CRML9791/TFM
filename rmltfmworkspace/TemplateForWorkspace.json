@@ -3760,6 +3760,225 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Copy STG to DWH Accounts')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set StarProcess",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "StarProcess",
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set StarProcess",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "STG_to_DWH_Goals",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"STG": {},
+									"DWH": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Set OK",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "OK",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set KO",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "KO",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Actividad",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set OK",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							},
+							{
+								"activity": "Set KO",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Actividad",
+							"value": {
+								"value": "Copy Goals",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "RecLOG",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set Actividad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "RecLog",
+								"type": "DataFlowReference",
+								"parameters": {
+									"Fase": {
+										"value": "'@{variables('Fase')}'",
+										"type": "Expression"
+									},
+									"Pipeline": {
+										"value": "'@{pipeline().Pipeline}'",
+										"type": "Expression"
+									},
+									"StarProcess": {
+										"value": "'@{formatDateTime(variables('StarProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"EndProcess": {
+										"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"Estatus": {
+										"value": "'@{variables('Estatus')}'",
+										"type": "Expression"
+									},
+									"Mensaje": {
+										"value": "'@{variables('Actividad')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Fase": {
+						"type": "String",
+						"defaultValue": "DWH"
+					},
+					"StarProcess": {
+						"type": "String"
+					},
+					"Estatus": {
+						"type": "String"
+					},
+					"Actividad": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "2 STGToDWH"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-31T05:46:35Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/STG_to_DWH_Goals')]",
+				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Copy STG to DWH Goals')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -15780,7 +15999,7 @@
 							"name": "AlterRow2"
 						}
 					],
-					"script": "source(output(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tBK_accountid as string,\n\t\tname as string,\n\t\townerid as string,\n\t\torignatingleadid as string,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as string,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tname as string,\n\t\townerid as integer,\n\t\torignatingleadid as integer,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as integer,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nSTG derive(STGHASH = crc32(512,upper(toString(ownerid)),toString(modifiedon),toString(name),toString(renevue),toString(numberofemployees),toString(industrycode),upper(toString(orignatingleadid)),upper(toString(territoryid)))) ~> STGHASH\nSTGHASH, DWH lookup(STG@SK_accountid == DWH@SK_accountid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(STG@HASHKEY),\n\tSTGHASH!=STG@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tname as string,\n\t\townerid as integer,\n\t\torignatingleadid as integer,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as integer,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = STGHASH,\n\t\tname = ConditionalSplit1@Nuevos@name,\n\t\townerid = ConditionalSplit1@Nuevos@ownerid,\n\t\torignatingleadid = ConditionalSplit1@Nuevos@orignatingleadid,\n\t\trenevue = ConditionalSplit1@Nuevos@renevue,\n\t\tnumberofemployees = ConditionalSplit1@Nuevos@numberofemployees,\n\t\tterritoryid = ConditionalSplit1@Nuevos@territoryid,\n\t\tindustrycode = ConditionalSplit1@Nuevos@industrycode,\n\t\tmodifiedon = ConditionalSplit1@Nuevos@modifiedon,\n\t\tcreatedon = ConditionalSplit1@Nuevos@createdon\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tname as string,\n\t\townerid as integer,\n\t\torignatingleadid as integer,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as integer,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_accountid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_accountid = ConditionalSplit1@Actualizaciones@SK_accountid,\n\t\tHASHKEY = STGHASH,\n\t\tname = ConditionalSplit1@Actualizaciones@name,\n\t\townerid = ConditionalSplit1@Actualizaciones@ownerid,\n\t\torignatingleadid = ConditionalSplit1@Actualizaciones@orignatingleadid,\n\t\trenevue = ConditionalSplit1@Actualizaciones@renevue,\n\t\tnumberofemployees = ConditionalSplit1@Actualizaciones@numberofemployees,\n\t\tterritoryid = ConditionalSplit1@Actualizaciones@territoryid,\n\t\tindustrycode = ConditionalSplit1@Actualizaciones@industrycode,\n\t\tmodifiedon = ConditionalSplit1@Actualizaciones@modifiedon,\n\t\tcreatedon = ConditionalSplit1@Actualizaciones@createdon\n\t)) ~> sink2"
+					"script": "source(output(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tBK_accountid as string,\n\t\tname as string,\n\t\townerid as string,\n\t\torignatingleadid as string,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as string,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tname as string,\n\t\townerid as integer,\n\t\torignatingleadid as integer,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as integer,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nSTG derive(STGHASH = crc32(512,upper(toString(ownerid)),toString(modifiedon),toString(name),toInteger(toString(renevue),'############'),toString(numberofemployees),toString(industrycode),upper(toString(orignatingleadid)),upper(toString(territoryid)))) ~> STGHASH\nSTGHASH, DWH lookup(STG@SK_accountid == DWH@SK_accountid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(STG@HASHKEY),\n\tSTGHASH!=STG@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tname as string,\n\t\townerid as integer,\n\t\torignatingleadid as integer,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as integer,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = STGHASH,\n\t\tname = ConditionalSplit1@Nuevos@name,\n\t\townerid = ConditionalSplit1@Nuevos@ownerid,\n\t\torignatingleadid = ConditionalSplit1@Nuevos@orignatingleadid,\n\t\trenevue = ConditionalSplit1@Nuevos@renevue,\n\t\tnumberofemployees = ConditionalSplit1@Nuevos@numberofemployees,\n\t\tterritoryid = ConditionalSplit1@Nuevos@territoryid,\n\t\tindustrycode = ConditionalSplit1@Nuevos@industrycode,\n\t\tmodifiedon = ConditionalSplit1@Nuevos@modifiedon,\n\t\tcreatedon = ConditionalSplit1@Nuevos@createdon\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tname as string,\n\t\townerid as integer,\n\t\torignatingleadid as integer,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as integer,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_accountid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_accountid = ConditionalSplit1@Actualizaciones@SK_accountid,\n\t\tHASHKEY = STGHASH,\n\t\tname = ConditionalSplit1@Actualizaciones@name,\n\t\townerid = ConditionalSplit1@Actualizaciones@ownerid,\n\t\torignatingleadid = ConditionalSplit1@Actualizaciones@orignatingleadid,\n\t\trenevue = ConditionalSplit1@Actualizaciones@renevue,\n\t\tnumberofemployees = ConditionalSplit1@Actualizaciones@numberofemployees,\n\t\tterritoryid = ConditionalSplit1@Actualizaciones@territoryid,\n\t\tindustrycode = ConditionalSplit1@Actualizaciones@industrycode,\n\t\tmodifiedon = ConditionalSplit1@Actualizaciones@modifiedon,\n\t\tcreatedon = ConditionalSplit1@Actualizaciones@createdon\n\t)) ~> sink2"
 				}
 			},
 			"dependsOn": [
@@ -15945,9 +16164,21 @@
 						},
 						{
 							"name": "JoinTerritory"
+						},
+						{
+							"name": "JoinSystemUsers"
+						},
+						{
+							"name": "JoinProducts"
+						},
+						{
+							"name": "JoinTerritories"
+						},
+						{
+							"name": "DerivedColumn2"
 						}
 					],
-					"script": "source(output(\n\t\tSK_leadid as integer,\n\t\tBK_leadid as string,\n\t\tcreatedon as timestamp,\n\t\townerid as string,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tcustom_territorioid as string,\n\t\tcustom_productid as string,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\tHASHKEY as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 10,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nsource(output(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SystemUser\nsource(output(\n\t\tSK_productid as integer,\n\t\tHASHKEY as long,\n\t\tBK_productid as string,\n\t\tproductnumber as string,\n\t\tproductname as string,\n\t\tBK_family as string,\n\t\tstandarcost as decimal(19,4),\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Product\nsource(output(\n\t\tSK_territoryid as integer,\n\t\tHASHKEY as long,\n\t\tBK_territoryid as string,\n\t\tterritoryname as string,\n\t\tparentterritory as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Territory\nSTG derive(STGHASH = crc32(512,upper(toString(ownerid)),toString(leadsource),toString(statuscode),toString(industry),toString(modifiedon),upper(toString(custom_territorioid)),upper(toString(custom_productid)),toString(rating),toString(employees),toInteger(toString(revenue),'############'))) ~> CrearHASH\nCrearHASH, DWH lookup(STG@SK_leadid == DWH@SK_leadid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(haskey),\n\thaskey != STGHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar, SystemUser join(ownerid == BK_systemuserid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSystemUser\nJoinTerritory derive(STGOwner = SK_systemuserid,\n\t\tSTGProduct = SK_productid,\n\t\tSTGTerritory = SK_territoryid) ~> DerivedColumn1\nJoinSystemUser, Product join(custom_productid == BK_productid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinProduct\nJoinProduct, Territory join(custom_territorioid == BK_territoryid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinTerritory\nDerivedColumn1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_leadid = Split@Nuevos@SK_leadid,\n\t\tcreatedon = Split@Nuevos@createdon,\n\t\townwer = STGOwner,\n\t\tleadsource = Split@Nuevos@leadsource,\n\t\tstatuscode = Split@Nuevos@statuscode,\n\t\tindustry = Split@Nuevos@industry,\n\t\tmodifiedon = Split@Nuevos@modifiedon,\n\t\tterritory = STGTerritory,\n\t\tproduct = STGProduct,\n\t\trating = Split@Nuevos@rating,\n\t\temployees = Split@Nuevos@employees,\n\t\trevenue = Split@Nuevos@revenue,\n\t\thaskey = STGHASH\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_leadid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_leadid = Split@Actualizaciones@SK_leadid,\n\t\tcreatedon = Split@Actualizaciones@createdon,\n\t\townwer,\n\t\tleadsource = Split@Actualizaciones@leadsource,\n\t\tstatuscode = Split@Actualizaciones@statuscode,\n\t\tindustry = Split@Actualizaciones@industry,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon,\n\t\tterritory,\n\t\tproduct,\n\t\trating = Split@Actualizaciones@rating,\n\t\temployees = Split@Actualizaciones@employees,\n\t\trevenue = Split@Actualizaciones@revenue,\n\t\thaskey = STGHASH\n\t)) ~> Actualizaciones"
+					"script": "source(output(\n\t\tSK_leadid as integer,\n\t\tBK_leadid as string,\n\t\tcreatedon as timestamp,\n\t\townerid as string,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tcustom_territorioid as string,\n\t\tcustom_productid as string,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\tHASHKEY as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 10,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nsource(output(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SystemUser\nsource(output(\n\t\tSK_productid as integer,\n\t\tHASHKEY as long,\n\t\tBK_productid as string,\n\t\tproductnumber as string,\n\t\tproductname as string,\n\t\tBK_family as string,\n\t\tstandarcost as decimal(19,4),\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Product\nsource(output(\n\t\tSK_territoryid as integer,\n\t\tHASHKEY as long,\n\t\tBK_territoryid as string,\n\t\tterritoryname as string,\n\t\tparentterritory as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Territory\nSTG derive(STGHASH = crc32(512,upper(toString(ownerid)),toString(leadsource),toString(statuscode),toString(industry),toString(modifiedon),upper(toString(custom_territorioid)),upper(toString(custom_productid)),toString(rating),toString(employees),toInteger(toString(revenue),'############'))) ~> CrearHASH\nCrearHASH, DWH lookup(STG@SK_leadid == DWH@SK_leadid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(haskey),\n\thaskey != STGHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar, SystemUser join(ownerid == BK_systemuserid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSystemUser\nJoinTerritory derive(STGOwner = SK_systemuserid,\n\t\tSTGProduct = SK_productid,\n\t\tSTGTerritory = SK_territoryid) ~> DerivedColumn1\nJoinSystemUser, Product join(custom_productid == BK_productid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinProduct\nJoinProduct, Territory join(custom_territorioid == BK_territoryid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinTerritory\nActualizar, SystemUser join(ownerid == BK_systemuserid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSystemUsers\nJoinSystemUsers, Product join(custom_productid == BK_productid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinProducts\nJoinProducts, Territory join(custom_territorioid == BK_territoryid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinTerritories\nJoinTerritories derive(STGOwner = SK_systemuserid,\n\t\tSTGProduct = SK_productid,\n\t\tSTGTerritory = SK_territoryid) ~> DerivedColumn2\nDerivedColumn1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_leadid = Split@Nuevos@SK_leadid,\n\t\tcreatedon = Split@Nuevos@createdon,\n\t\townwer = STGOwner,\n\t\tleadsource = Split@Nuevos@leadsource,\n\t\tstatuscode = Split@Nuevos@statuscode,\n\t\tindustry = Split@Nuevos@industry,\n\t\tmodifiedon = Split@Nuevos@modifiedon,\n\t\tterritory = STGTerritory,\n\t\tproduct = STGProduct,\n\t\trating = Split@Nuevos@rating,\n\t\temployees = Split@Nuevos@employees,\n\t\trevenue = Split@Nuevos@revenue,\n\t\thaskey = STGHASH\n\t)) ~> Nuevos\nDerivedColumn2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_leadid as integer,\n\t\tcreatedon as timestamp,\n\t\townwer as integer,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tterritory as integer,\n\t\tproduct as integer,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\thaskey as long\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_leadid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_leadid = Split@Actualizaciones@SK_leadid,\n\t\tcreatedon = Split@Actualizaciones@createdon,\n\t\townwer = STGOwner,\n\t\tleadsource = Split@Actualizaciones@leadsource,\n\t\tstatuscode = Split@Actualizaciones@statuscode,\n\t\tindustry = Split@Actualizaciones@industry,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon,\n\t\tterritory = STGTerritory,\n\t\tproduct = STGProduct,\n\t\trating = Split@Actualizaciones@rating,\n\t\temployees = Split@Actualizaciones@employees,\n\t\trevenue = Split@Actualizaciones@revenue,\n\t\thaskey = STGHASH\n\t)) ~> Actualizaciones"
 				}
 			},
 			"dependsOn": [
