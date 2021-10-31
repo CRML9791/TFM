@@ -217,7 +217,122 @@
 							"type": "ParquetWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "originatingleadid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "originatingleadid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "revenue",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "revenue",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "industrycode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "industrycode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "numberofemployees",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "numberofemployees",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "accountid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "accountid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "ownerid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "ownerid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "territoryid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "territoryid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "createdon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "createdon",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
