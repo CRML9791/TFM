@@ -1,0 +1,90 @@
+{
+	"name": "STG_Leads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_leadid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BK_leadid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "createdon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ownerid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "leadsource",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "statuscode",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "industry",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "custom_territorioid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "custom_productid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "rating",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "employees",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "revenue",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "leads_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

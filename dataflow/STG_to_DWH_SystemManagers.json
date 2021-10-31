@@ -1,0 +1,61 @@
+{
+	"name": "STG_to_DWH_SystemManagers",
+	"properties": {
+		"folder": {
+			"name": "2_STG_to_DWH"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_SystemUsersManagers",
+						"type": "DatasetReference"
+					},
+					"name": "STG"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_SystemManagers",
+						"type": "DatasetReference"
+					},
+					"name": "DWH"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_SystemManagers",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_SystemManagers",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "STGHASH"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "ConditionalSplit1"
+				},
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "AlterRow2"
+				}
+			],
+			"script": "source(output(\n\t\tSK_systemusermanagerid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemusermanagerid as string,\n\t\tfullname as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_systemusermanagerid as integer,\n\t\tHASHKEY as long,\n\t\tfullname as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nSTG derive(STGHASH = crc32(512,toString(fullname))) ~> STGHASH\nSTGHASH, DWH lookup(STG@SK_systemusermanagerid == DWH@SK_systemusermanagerid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWH@HASHKEY),\n\tSTGHASH!=DWH@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_systemusermanagerid as integer,\n\t\tHASHKEY as long,\n\t\tfullname as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_systemusermanagerid = ConditionalSplit1@Nuevos@SK_systemusermanagerid,\n\t\tHASHKEY = STGHASH,\n\t\tfullname = ConditionalSplit1@Nuevos@fullname\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_systemusermanagerid as integer,\n\t\tHASHKEY as long,\n\t\tfullname as string\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_systemusermanagerid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_systemusermanagerid = ConditionalSplit1@Actualizaciones@SK_systemusermanagerid,\n\t\tHASHKEY = STGHASH,\n\t\tfullname = ConditionalSplit1@Actualizaciones@fullname\n\t)) ~> sink2"
+		}
+	}
+}

@@ -1,0 +1,61 @@
+{
+	"name": "RAW_to_STG_SystemUsers",
+	"properties": {
+		"folder": {
+			"name": "1_RAW_to_STG"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ParquetSystemUsers",
+						"type": "DatasetReference"
+					},
+					"name": "DataverseParquet"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_SystemUsers",
+						"type": "DatasetReference"
+					},
+					"name": "STG"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "STG_SystemUsers",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_SystemUsers",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CrearHASH"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "Split"
+				},
+				{
+					"name": "Insertar"
+				},
+				{
+					"name": "Actualizar"
+				}
+			],
+			"script": "source(output(\n\t\tfullname as string,\n\t\tsystemuserid as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> DataverseParquet\nsource(output(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nDataverseParquet derive(RAWHASH = crc32(512,upper(toString(fullname)),upper(toString(parentsystemuserid)))) ~> CrearHASH\nCrearHASH, STG lookup(upper(systemuserid) == BK_systemuserid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != RAWHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_systemuserid = systemuserid,\n\t\tfullname = Split@Nuevos@fullname,\n\t\tparentsystemuserid = Split@Nuevos@parentsystemuserid,\n\t\tmodifiedon = Split@Nuevos@modifiedon\n\t)) ~> sink1\nActualizar sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_systemuserid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_systemuserid,\n\t\tfullname = Split@Actualizaciones@fullname,\n\t\tparentsystemuserid = Split@Actualizaciones@parentsystemuserid,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon\n\t)) ~> sink2"
+		}
+	}
+}

@@ -1,0 +1,182 @@
+{
+	"name": "DataverseToParquetGoals",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataverseToParquetGoals",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Delete",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CommonDataServiceForAppsSource",
+						"query": "<fetch>\n<entity name=\"goal\">\n<attribute name=\"goalenddate\"/>\n<attribute name=\"targetmoney\"/>\n<attribute name=\"targetinteger\"/>\n<attribute name=\"statuscode\"/>\n<attribute name=\"metricid\"/>\n<attribute name=\"goalstartdate\"/>\n<attribute name=\"goalid\"/>\n<attribute name=\"isamount\"/>\n<filter type='and'>\n<condition attribute=\"statecode\" value=\"0\" operator=\"eq\"/>\n<!--<condition attribute='modifiedon' operator='yesterday'/> -->\n</filter>\n</entity>\n</fetch>"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "targetinteger",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "targetinteger",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "goalenddate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "goalenddate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "targetmoney",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "targetmoney",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "goalstartdate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "goalstartdate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "isamount",
+									"type": "Boolean"
+								},
+								"sink": {
+									"name": "isamount",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"name": "statuscode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "statuscode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "goalid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "goalid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "metricid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "metricid",
+									"type": "Guid"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DataverseGoals",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParquetGoals",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Delete",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ParquetGoals",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.parquet",
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "No valen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-22T05:58:07Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "RecLog",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Logs",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Logs",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "parameters{\n\tFase as string,\n\tPipeline as string,\n\tStarProcess as string,\n\tEndProcess as string,\n\tEstatus as string,\n\tMensaje as string\n}\nsource(output(\n\t\tId as integer,\n\t\tFase as string,\n\t\tPipeline as string,\n\t\tStartProcess as timestamp,\n\t\tEndProcess as timestamp,\n\t\tEstatus as string,\n\t\tMensaje as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tbatchSize: 1,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT TOP 1 * FROM dbo.logs ORDER BY Id DESC',\n\tformat: 'query') ~> source1\nsource1 derive(Fase2 = $Fase,\n\t\tPipeline2 = $Pipeline,\n\t\tEstatus2 = $Estatus,\n\t\tMensaje2 = $Mensaje,\n\t\tStartProcess2 = toTimestamp($StarProcess),\n\t\tEndProcess2 = toTimestamp($EndProcess)) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tFase as string,\n\t\tPipeline as string,\n\t\tStartProcess as timestamp,\n\t\tEndProcess as timestamp,\n\t\tEstatus as string,\n\t\tMensaje as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tFase = Fase2,\n\t\tPipeline = Pipeline2,\n\t\tStartProcess = StartProcess2,\n\t\tEndProcess = EndProcess2,\n\t\tEstatus = Estatus2,\n\t\tMensaje = Mensaje2\n\t)) ~> sink1"
+		}
+	}
+}

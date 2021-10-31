@@ -1,0 +1,40 @@
+{
+	"name": "DWH_SystemUsers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_systemuserid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "fullname",
+				"type": "varchar"
+			},
+			{
+				"name": "manager",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "systemusers_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

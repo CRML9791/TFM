@@ -1,0 +1,19 @@
+{
+	"name": "DataverseGoals",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse_CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "goal"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

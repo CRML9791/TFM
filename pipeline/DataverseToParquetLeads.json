@@ -1,0 +1,222 @@
+{
+	"name": "DataverseToParquetLeads",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataverseToParquetLeads",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Delete",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CommonDataServiceForAppsSource",
+						"query": "<fetch>\n<entity name='lead'>\n<attribute name='cra83_territoryid'/>\n<attribute name='statuscode'/>\n<attribute name='leadqualitycode'/>\n<attribute name='numberofemployees'/>\n<attribute name='industrycode'/>\n<attribute name='revenue'/>\n<attribute name='modifiedon'/>\n<attribute name='createdon'/>\n<attribute name='cra83_productoid'/>\n<attribute name='leadsourcecode'/>\n<attribute name='ownerid'/>\n<attribute name='leadid'/>\n<attribute name='createdon'/>\n<!--<filter type='and'>-->\n<!--<condition attribute='modifiedon' operator='yesterday'/> -->\n<!--</filter>-->\n</entity>\n</fetch>"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "cra83_productoid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "cra83_productoid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "revenue",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "revenue",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "leadid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "leadid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "cra83_territoryid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "cra83_territoryid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "industrycode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "industrycode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "numberofemployees",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "numberofemployees",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "statuscode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "statuscode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "leadsourcecode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "leadsourcecode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ownerid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "ownerid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "leadqualitycode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "leadqualitycode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "createdon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "createdon",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DataverseLeads",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParquetLeads",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Delete",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ParquetLeads",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.parquet",
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "No valen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-24T17:30:30Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "DataverseAccounts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse_CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "account"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

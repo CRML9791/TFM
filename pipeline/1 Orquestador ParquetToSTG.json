@@ -1,0 +1,286 @@
+{
+	"name": "1 Orquestador ParquetToSTG",
+	"properties": {
+		"activities": [
+			{
+				"name": "ParquetToSTG Accounts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Appointments",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Account",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Appointments",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Goals",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Appointment",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Emails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG PhoneCalls",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Emails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Goals",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Opportunities",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Goals",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Leads",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG ProductFamilies",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Leads",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Opportunities",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Opportunities",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG OpportunityProducts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Territories",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG OpportunityProducts",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG PhoneCalls",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG SystemUsers",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG PhoneCalls",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG ProductFamilies",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Emails",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetProductFamilies1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Product",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG OpportunityProducts",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Products",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG SystemManagers",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Accounts",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG SystemManagers",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG SystemUsers",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Product",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG SystemUsers",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Territories",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Task",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Territories",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG Task",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG SystemManagers",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG Tasks",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "1 ParquetToSTG"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-25T06:16:19Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

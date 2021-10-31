@@ -1,0 +1,74 @@
+{
+	"name": "STG_PhoneCalls",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "activitytype",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_activityid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "ownerid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "regardingid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "duration",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "direction",
+				"type": "bit"
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "priority",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "status",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "duedate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PhoneCalss_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

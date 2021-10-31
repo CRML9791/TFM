@@ -1,0 +1,61 @@
+{
+	"name": "STG_to_DWH_Goals",
+	"properties": {
+		"folder": {
+			"name": "2_STG_to_DWH"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_Goals",
+						"type": "DatasetReference"
+					},
+					"name": "STG"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Goals",
+						"type": "DatasetReference"
+					},
+					"name": "DWH"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_Goals",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Goals",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "STGHASH"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "ConditionalSplit1"
+				},
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "AlterRow2"
+				}
+			],
+			"script": "source(output(\n\t\tSK_goalid as integer,\n\t\tHASHKEY as long,\n\t\tBK_agoalid as string,\n\t\tgoalstar as timestamp,\n\t\tgoalend as timestamp,\n\t\ttargetmoney as decimal(19,4),\n\t\ttargetinteger as integer,\n\t\tisamount as boolean,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_goalid as integer,\n\t\tHASHKEY as long,\n\t\tgoalstar as timestamp,\n\t\tgoalend as timestamp,\n\t\ttargetmoney as decimal(19,4),\n\t\ttargetinteger as integer,\n\t\tisamount as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nSTG derive(STGHASH = crc32(512,toString(goalstar),toString(goalend),toString(targetinteger),toInteger(toString(targetmoney),'############'))) ~> STGHASH\nSTGHASH, DWH lookup(STG@SK_goalid == DWH@SK_goalid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWH@HASHKEY),\n\tSTGHASH!=DWH@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_goalid as integer,\n\t\tHASHKEY as long,\n\t\tgoalstar as timestamp,\n\t\tgoalend as timestamp,\n\t\ttargetmoney as decimal(19,4),\n\t\ttargetinteger as integer,\n\t\tisamount as boolean\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = STGHASH,\n\t\tgoalstar = ConditionalSplit1@Nuevos@goalstar,\n\t\tgoalend = ConditionalSplit1@Nuevos@goalend,\n\t\ttargetmoney = ConditionalSplit1@Nuevos@targetmoney,\n\t\ttargetinteger = ConditionalSplit1@Nuevos@targetinteger,\n\t\tisamount = ConditionalSplit1@Nuevos@isamount,\n\t\tSK_goalid = ConditionalSplit1@Nuevos@SK_goalid\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_goalid as integer,\n\t\tHASHKEY as long,\n\t\tgoalstar as timestamp,\n\t\tgoalend as timestamp,\n\t\ttargetmoney as decimal(19,4),\n\t\ttargetinteger as integer,\n\t\tisamount as boolean\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_goalid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_goalid = ConditionalSplit1@Actualizaciones@SK_goalid,\n\t\tHASHKEY = STGHASH,\n\t\tgoalstar = ConditionalSplit1@Actualizaciones@goalstar,\n\t\tgoalend = ConditionalSplit1@Actualizaciones@goalend,\n\t\ttargetmoney = ConditionalSplit1@Actualizaciones@targetmoney,\n\t\ttargetinteger = ConditionalSplit1@Actualizaciones@targetinteger,\n\t\tisamount = ConditionalSplit1@Actualizaciones@isamount\n\t)) ~> sink2"
+		}
+	}
+}

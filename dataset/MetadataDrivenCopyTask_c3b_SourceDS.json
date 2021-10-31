@@ -1,0 +1,27 @@
+{
+	"name": "MetadataDrivenCopyTask_c3b_SourceDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse_CRM",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cw_entityName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "MetadataDrivenCopyTask_c3b_20211022"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": {
+				"value": "@dataset().cw_entityName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

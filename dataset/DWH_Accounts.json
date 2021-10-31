@@ -1,0 +1,78 @@
+{
+	"name": "DWH_Accounts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_accountid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "name",
+				"type": "varchar"
+			},
+			{
+				"name": "ownerid",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "orignatingleadid",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "renevue",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "numberofemployees",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "territoryid",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "industrycode",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "createdon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Accounts_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

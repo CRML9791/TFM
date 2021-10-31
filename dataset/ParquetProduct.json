@@ -1,0 +1,55 @@
+{
+	"name": "ParquetProduct",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "products",
+				"fileSystem": "tfmfilesystem"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "productnumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "productid",
+				"type": "UTF8"
+			},
+			{
+				"name": "transactioncurrencyid",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedon",
+				"type": "INT96"
+			},
+			{
+				"name": "standardcost",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "parentproductid",
+				"type": "UTF8"
+			},
+			{
+				"name": "name",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

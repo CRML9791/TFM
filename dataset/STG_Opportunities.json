@@ -1,0 +1,79 @@
+{
+	"name": "STG_Opportunities",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_opportunityid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_opportunityid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "ownerid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "parentaccountid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "orignatingleadid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "closeprobability",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "createdon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "purchasetimeframe",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "opportunityratingcode",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "status",
+				"type": "tinyint",
+				"precision": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Oppotunities_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

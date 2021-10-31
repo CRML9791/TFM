@@ -1,0 +1,59 @@
+{
+	"name": "STG_Products",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_productid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_productid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "productnumber",
+				"type": "varchar"
+			},
+			{
+				"name": "productname",
+				"type": "varchar"
+			},
+			{
+				"name": "BK_family",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "standarcost",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "products_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

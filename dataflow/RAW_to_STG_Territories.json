@@ -1,0 +1,61 @@
+{
+	"name": "RAW_to_STG_Territories",
+	"properties": {
+		"folder": {
+			"name": "1_RAW_to_STG"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ParquetTerritories",
+						"type": "DatasetReference"
+					},
+					"name": "DataverseParquet"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_Territories",
+						"type": "DatasetReference"
+					},
+					"name": "STG"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "STG_Territories",
+						"type": "DatasetReference"
+					},
+					"name": "Nuevos"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_Territories",
+						"type": "DatasetReference"
+					},
+					"name": "Actualizaciones"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CrearHASH"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "Split"
+				},
+				{
+					"name": "Insertar"
+				},
+				{
+					"name": "Actualizar"
+				}
+			],
+			"script": "source(output(\n\t\tname as string,\n\t\tterritoryid as string,\n\t\tmodifiedon as timestamp,\n\t\tparentterritoryid as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> DataverseParquet\nsource(output(\n\t\tSK_territoryid as integer,\n\t\tHASHKEY as long,\n\t\tBK_territoryid as string,\n\t\tterritoryname as string,\n\t\tparentterritory as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nDataverseParquet derive(RAWHASH = crc32(512,toString(name),upper(toString(parentterritoryid)))) ~> CrearHASH\nCrearHASH, STG lookup(upper(territoryid) == BK_territoryid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != RAWHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_territoryid as integer,\n\t\tHASHKEY as long,\n\t\tBK_territoryid as string,\n\t\tterritoryname as string,\n\t\tparentterritory as string,\n\t\tmodifiedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_territoryid = territoryid,\n\t\tterritoryname = name,\n\t\tparentterritory = parentterritoryid,\n\t\tmodifiedon = Split@Nuevos@modifiedon\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_territoryid as integer,\n\t\tHASHKEY as long,\n\t\tBK_territoryid as string,\n\t\tterritoryname as string,\n\t\tparentterritory as string,\n\t\tmodifiedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_territoryid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_territoryid,\n\t\tterritoryname = name,\n\t\tparentterritory = parentterritoryid,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon\n\t)) ~> Actualizaciones"
+		}
+	}
+}

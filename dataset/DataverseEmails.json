@@ -1,0 +1,19 @@
+{
+	"name": "DataverseEmails",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse_CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "email"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

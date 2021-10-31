@@ -1,0 +1,162 @@
+{
+	"name": "DataverseToParquetOpportunityProduct",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataverseToParquetOpportunityProduct",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Delete",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CommonDataServiceForAppsSource",
+						"query": "<fetch>\n<entity name=\"opportunityproduct\">\n<attribute name=\"productid\"/>\n<attribute name=\"priceperunit\"/>\n<attribute name=\"quantity\"/>\n<attribute name=\"extendedamount\"/>\n<attribute name=\"opportunityproductid\"/>\n<attribute name=\"opportunityid\"/>\n<filter type=\"and\">\n<!--<condition attribute=\"modifiedon\" operator=\"yesterday\"/>-->\n</filter>\n</entity>\n</fetch>"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "productid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "productid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "extendedamount",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "extendedamount",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "priceperunit",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "priceperunit",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "quantity",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "quantity",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "opportunityproductid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "opportunityproductid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "opportunityid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "opportunityid",
+									"type": "Guid"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DataverseOpportunityProducts",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParquetOpportunityProduct",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Delete",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ParquetOpportunityProduct",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.parquet",
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "No valen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-22T05:58:23Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

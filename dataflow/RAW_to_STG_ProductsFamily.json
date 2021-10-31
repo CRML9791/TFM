@@ -1,0 +1,61 @@
+{
+	"name": "RAW_to_STG_ProductsFamily",
+	"properties": {
+		"folder": {
+			"name": "1_RAW_to_STG"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ParquetProductFamily",
+						"type": "DatasetReference"
+					},
+					"name": "DataverseParquet"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_ProductFamilies",
+						"type": "DatasetReference"
+					},
+					"name": "STG"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "STG_ProductFamilies",
+						"type": "DatasetReference"
+					},
+					"name": "Nuevos"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_ProductFamilies",
+						"type": "DatasetReference"
+					},
+					"name": "Actualizaciones"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CrearHASH"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "Split"
+				},
+				{
+					"name": "Insertar"
+				},
+				{
+					"name": "Actualizar"
+				}
+			],
+			"script": "source(output(\n\t\tname as string,\n\t\tproductid as string,\n\t\tproductnumber as string,\n\t\tproductstructure as integer,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> DataverseParquet\nsource(output(\n\t\tSK_productfamilyid as integer,\n\t\tHASHKEY as long,\n\t\tBK_productfamilyid as string,\n\t\tproductnumber as string,\n\t\tproductname as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nDataverseParquet derive(RAWHASH = crc32(512,toString(name),toString(productnumber))) ~> CrearHASH\nCrearHASH, STG lookup(upper(productid) == BK_productfamilyid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != RAWHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_productfamilyid as integer,\n\t\tHASHKEY as long,\n\t\tBK_productfamilyid as string,\n\t\tproductnumber as string,\n\t\tproductname as string,\n\t\tmodifiedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_productfamilyid = productid,\n\t\tproductnumber = Split@Nuevos@productnumber,\n\t\tproductname = name,\n\t\tmodifiedon = Split@Nuevos@modifiedon\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_productfamilyid as integer,\n\t\tHASHKEY as long,\n\t\tBK_productfamilyid as string,\n\t\tproductnumber as string,\n\t\tproductname as string,\n\t\tmodifiedon as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_productfamilyid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_productfamilyid = productid,\n\t\tproductnumber = Split@Actualizaciones@productnumber,\n\t\tproductname = name,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon\n\t)) ~> Actualizaciones"
+		}
+	}
+}

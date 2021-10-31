@@ -1,0 +1,51 @@
+{
+	"name": "Logs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MetadataLogs",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Fase",
+				"type": "varchar"
+			},
+			{
+				"name": "Pipeline",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StartProcess",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EndProcess",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Estatus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mensaje",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "logs"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

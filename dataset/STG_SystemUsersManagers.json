@@ -1,0 +1,45 @@
+{
+	"name": "STG_SystemUsersManagers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_systemusermanagerid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_systemusermanagerid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "fullname",
+				"type": "varchar"
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "systemusersmanagers_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

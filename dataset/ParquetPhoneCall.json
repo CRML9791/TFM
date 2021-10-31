@@ -1,0 +1,65 @@
+{
+	"name": "ParquetPhoneCall",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "phonecalls",
+				"fileSystem": "tfmfilesystem"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "activityid",
+				"type": "UTF8"
+			},
+			{
+				"name": "directioncode",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "statuscode",
+				"type": "INT32"
+			},
+			{
+				"name": "subject",
+				"type": "UTF8"
+			},
+			{
+				"name": "scheduledend",
+				"type": "INT96"
+			},
+			{
+				"name": "regardingobjectid",
+				"type": "UTF8"
+			},
+			{
+				"name": "actualdurationminutes",
+				"type": "INT32"
+			},
+			{
+				"name": "ownerid",
+				"type": "UTF8"
+			},
+			{
+				"name": "prioritycode",
+				"type": "INT32"
+			},
+			{
+				"name": "modifiedon",
+				"type": "INT96"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

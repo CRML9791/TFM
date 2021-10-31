@@ -1,0 +1,449 @@
+{
+	"name": "DataverseToParquetProducts1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Delete Parket Products",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "StartProcess",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ParquetProduct",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.parquet",
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "StartProcess",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "StartProcess",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Actividad",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set KO",
+						"dependencyConditions": [
+							"Skipped",
+							"Completed"
+						]
+					},
+					{
+						"activity": "Set OK",
+						"dependencyConditions": [
+							"Skipped",
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Actividad",
+					"value": "Delete Parquet Products"
+				}
+			},
+			{
+				"name": "LogDelete",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set Actividad",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "RecLog",
+						"type": "DataFlowReference",
+						"parameters": {
+							"Fase": {
+								"value": "'@{'RAW'}'",
+								"type": "Expression"
+							},
+							"Pipeline": {
+								"value": "'@{pipeline().Pipeline}'",
+								"type": "Expression"
+							},
+							"StarProcess": {
+								"value": "'@{formatDateTime(variables('StartProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+								"type": "Expression"
+							},
+							"EndProcess": {
+								"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+								"type": "Expression"
+							},
+							"Estatus": {
+								"value": "'@{variables('Estatus')}'",
+								"type": "Expression"
+							},
+							"Mensaje": {
+								"value": "'@{variables('Actividad')}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Set OK",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Delete Parket Products",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Estatus",
+					"value": "OK"
+				}
+			},
+			{
+				"name": "Set KO",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Delete Parket Products",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Estatus",
+					"value": "OK"
+				}
+			},
+			{
+				"name": "StartProcess_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "LogDelete",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "StartProcess",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "StartProcess_copy1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CommonDataServiceForAppsSource",
+						"query": "<fetch>\n<entity name=\"product\">\n<attribute name=\"name\"/>\n<attribute name=\"productid\"/>\n<attribute name=\"productnumber\"/>\n<attribute name=\"parentproductid\"/>\n<attribute name=\"standardcost\"/>\n<attribute name=\"modifiedon\"/>\n\n<filter type=\"and\">\n<condition attribute=\"productnumber\" value=\"P%\" operator=\"like\"/>\n<condition attribute=\"name\" value=\"TFM%\" operator=\"like\"/>\n<condition attribute=\"parentproductid\" operator=\"not-null\"/>\n<!--<condition attribute=\"modifiedon\" operator=\"yesterday\"/>-->\n</filter>\n</entity>\n</fetch>"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "productnumber",
+									"type": "String"
+								},
+								"sink": {
+									"name": "productnumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "productid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "productid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "transactioncurrencyid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "standardcost",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "standardcost",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "parentproductid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "parentproductid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DataverseProducts",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParquetProduct",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Set OK_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Estatus",
+					"value": "OK"
+				}
+			},
+			{
+				"name": "Set KO_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Estatus",
+					"value": "OK"
+				}
+			},
+			{
+				"name": "Set Actividad_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set OK_copy1",
+						"dependencyConditions": [
+							"Skipped",
+							"Completed"
+						]
+					},
+					{
+						"activity": "Set KO_copy1",
+						"dependencyConditions": [
+							"Skipped",
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Actividad",
+					"value": "Copy Parquet Products"
+				}
+			},
+			{
+				"name": "LogCopyParquetAccounts",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set Actividad_copy1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "RecLog",
+						"type": "DataFlowReference",
+						"parameters": {
+							"Fase": {
+								"value": "'@{'RAW'}'",
+								"type": "Expression"
+							},
+							"Pipeline": {
+								"value": "'@{pipeline().Pipeline}'",
+								"type": "Expression"
+							},
+							"StarProcess": {
+								"value": "'@{formatDateTime(variables('StartProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+								"type": "Expression"
+							},
+							"EndProcess": {
+								"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+								"type": "Expression"
+							},
+							"Estatus": {
+								"value": "'@{variables('Estatus')}'",
+								"type": "Expression"
+							},
+							"Mensaje": {
+								"value": "'@{variables('Actividad')}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"variables": {
+			"StartProcess": {
+				"type": "String"
+			},
+			"Fase": {
+				"type": "String",
+				"defaultValue": "RAW"
+			},
+			"Actividad": {
+				"type": "String"
+			},
+			"Estatus": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "0 DataverseToParquet"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-31T07:54:15Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

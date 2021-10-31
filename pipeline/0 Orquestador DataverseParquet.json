@@ -1,0 +1,286 @@
+{
+	"name": "0 Orquestador DataverseParquet",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataverseToParquetAccounts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetAppointments",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetAccounts1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetAppointments",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetGoals",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetAppointments1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetEmails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetPhoneCalls",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetAppointments1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetGoals",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetOpportunities",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetGoal1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetLeads",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetProductFamilies",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetLeads1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetOpportunities",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetOpportunities1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetOpportunityProducts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetTerritories",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetOpportunityProducts1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetPhoneCalls",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetSystemUsers",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetPhoneCalls1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetProductFamilies",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetEmails",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetProductFamilies1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetProduct",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetOpportunityProducts",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetProducts1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetSystemManagers",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetAccounts",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetSystemManagers1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetSystemUsers",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetProduct",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetSystemusers1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetTerritories",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetTask",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetTerritories1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DataverseToParquetTask",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "DataverseToParquetSystemManagers",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DataverseToParquetTask1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "0 DataverseToParquet"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-25T06:11:25Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

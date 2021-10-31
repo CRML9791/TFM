@@ -1,0 +1,50 @@
+{
+	"name": "DWH_Products",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_productid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "productnumber",
+				"type": "varchar"
+			},
+			{
+				"name": "productname",
+				"type": "varchar"
+			},
+			{
+				"name": "SK_family",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "standarcost",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "products_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

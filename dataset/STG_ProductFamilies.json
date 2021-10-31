@@ -1,0 +1,49 @@
+{
+	"name": "STG_ProductFamilies",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_productfamilyid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_productfamilyid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "productnumber",
+				"type": "varchar"
+			},
+			{
+				"name": "productname",
+				"type": "varchar"
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "productfamillies_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

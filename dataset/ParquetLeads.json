@@ -1,0 +1,347 @@
+{
+	"name": "ParquetLeads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "leads",
+				"fileSystem": "tfmfilesystem"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "activityadditionalparams",
+				"type": "UTF8"
+			},
+			{
+				"name": "activityid",
+				"type": "UTF8"
+			},
+			{
+				"name": "activitytypecode",
+				"type": "UTF8"
+			},
+			{
+				"name": "actualdurationminutes",
+				"type": "INT32"
+			},
+			{
+				"name": "actualend",
+				"type": "INT96"
+			},
+			{
+				"name": "actualstart",
+				"type": "INT96"
+			},
+			{
+				"name": "attachmentcount",
+				"type": "INT32"
+			},
+			{
+				"name": "attachmenterrors",
+				"type": "INT32"
+			},
+			{
+				"name": "category",
+				"type": "UTF8"
+			},
+			{
+				"name": "createdby",
+				"type": "UTF8"
+			},
+			{
+				"name": "createdbyname",
+				"type": "UTF8"
+			},
+			{
+				"name": "createdbyyominame",
+				"type": "UTF8"
+			},
+			{
+				"name": "createdon",
+				"type": "INT96"
+			},
+			{
+				"name": "createdonbehalfby",
+				"type": "UTF8"
+			},
+			{
+				"name": "createdonbehalfbyname",
+				"type": "UTF8"
+			},
+			{
+				"name": "createdonbehalfbyyominame",
+				"type": "UTF8"
+			},
+			{
+				"name": "description",
+				"type": "UTF8"
+			},
+			{
+				"name": "exchangerate",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "globalobjectid",
+				"type": "UTF8"
+			},
+			{
+				"name": "importsequencenumber",
+				"type": "INT32"
+			},
+			{
+				"name": "instancetypecode",
+				"type": "INT32"
+			},
+			{
+				"name": "isalldayevent",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "isbilled",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "isdraft",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "ismapiprivate",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "isregularactivity",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "isunsafe",
+				"type": "INT32"
+			},
+			{
+				"name": "isworkflowcreated",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "lastonholdtime",
+				"type": "INT96"
+			},
+			{
+				"name": "location",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedby",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedbyname",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedbyyominame",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedfieldsmask",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedon",
+				"type": "INT96"
+			},
+			{
+				"name": "modifiedonbehalfby",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedonbehalfbyname",
+				"type": "UTF8"
+			},
+			{
+				"name": "modifiedonbehalfbyyominame",
+				"type": "UTF8"
+			},
+			{
+				"name": "onholdtime",
+				"type": "INT32"
+			},
+			{
+				"name": "originalstartdate",
+				"type": "INT96"
+			},
+			{
+				"name": "outlookownerapptid",
+				"type": "INT32"
+			},
+			{
+				"name": "overriddencreatedon",
+				"type": "INT96"
+			},
+			{
+				"name": "ownerid",
+				"type": "UTF8"
+			},
+			{
+				"name": "owneridname",
+				"type": "UTF8"
+			},
+			{
+				"name": "owneridtype",
+				"type": "UTF8"
+			},
+			{
+				"name": "owneridyominame",
+				"type": "UTF8"
+			},
+			{
+				"name": "owningbusinessunit",
+				"type": "UTF8"
+			},
+			{
+				"name": "owningbusinessunitname",
+				"type": "UTF8"
+			},
+			{
+				"name": "owningteam",
+				"type": "UTF8"
+			},
+			{
+				"name": "owninguser",
+				"type": "UTF8"
+			},
+			{
+				"name": "prioritycode",
+				"type": "INT32"
+			},
+			{
+				"name": "processid",
+				"type": "UTF8"
+			},
+			{
+				"name": "regardingobjectid",
+				"type": "UTF8"
+			},
+			{
+				"name": "regardingobjectidname",
+				"type": "UTF8"
+			},
+			{
+				"name": "regardingobjectidyominame",
+				"type": "UTF8"
+			},
+			{
+				"name": "regardingobjecttypecode",
+				"type": "UTF8"
+			},
+			{
+				"name": "safedescription",
+				"type": "UTF8"
+			},
+			{
+				"name": "scheduleddurationminutes",
+				"type": "INT32"
+			},
+			{
+				"name": "scheduledend",
+				"type": "INT96"
+			},
+			{
+				"name": "scheduledstart",
+				"type": "INT96"
+			},
+			{
+				"name": "seriesid",
+				"type": "UTF8"
+			},
+			{
+				"name": "serviceid",
+				"type": "UTF8"
+			},
+			{
+				"name": "serviceidname",
+				"type": "UTF8"
+			},
+			{
+				"name": "slaid",
+				"type": "UTF8"
+			},
+			{
+				"name": "slainvokedid",
+				"type": "UTF8"
+			},
+			{
+				"name": "slainvokedidname",
+				"type": "UTF8"
+			},
+			{
+				"name": "slaname",
+				"type": "UTF8"
+			},
+			{
+				"name": "sortdate",
+				"type": "INT96"
+			},
+			{
+				"name": "stageid",
+				"type": "UTF8"
+			},
+			{
+				"name": "statecode",
+				"type": "INT32"
+			},
+			{
+				"name": "statuscode",
+				"type": "INT32"
+			},
+			{
+				"name": "subcategory",
+				"type": "UTF8"
+			},
+			{
+				"name": "subject",
+				"type": "UTF8"
+			},
+			{
+				"name": "subscriptionid",
+				"type": "UTF8"
+			},
+			{
+				"name": "timezoneruleversionnumber",
+				"type": "INT32"
+			},
+			{
+				"name": "transactioncurrencyid",
+				"type": "UTF8"
+			},
+			{
+				"name": "transactioncurrencyidname",
+				"type": "UTF8"
+			},
+			{
+				"name": "traversedpath",
+				"type": "UTF8"
+			},
+			{
+				"name": "utcconversiontimezonecode",
+				"type": "INT32"
+			},
+			{
+				"name": "versionnumber",
+				"type": "INT64"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,68 @@
+{
+	"name": "STG_Goals",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_goalid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_agoalid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "goalstar",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "goalend",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "targetmoney",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "targetinteger",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "isamount",
+				"type": "bit"
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Goals_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

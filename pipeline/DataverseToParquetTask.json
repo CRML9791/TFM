@@ -1,0 +1,182 @@
+{
+	"name": "DataverseToParquetTask",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataverseToParquetTask",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Delete",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CommonDataServiceForAppsSource",
+						"query": "<fetch>\n<entity name=\"task\">\n<attribute name=\"subject\"/>\n<attribute name=\"statuscode\"/>\n<attribute name=\"regardingobjectid\"/>\n<attribute name=\"prioritycode\"/>\n<attribute name=\"ownerid\"/>\n<attribute name=\"modifiedon\"/>\n<attribute name=\"actualdurationminutes\"/>\n<attribute name=\"scheduledend\"/>\n<attribute name=\"activityid\"/>\n<filter type=\"and\">\n<!--<condition attribute=\"modifiedon\" operator=\"yesterday\"/>-->\n</filter>\n</entity>\n</fetch>"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "activityid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "activityid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "statuscode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "statuscode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "subject",
+									"type": "String"
+								},
+								"sink": {
+									"name": "subject",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "scheduledend",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "scheduledend",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "regardingobjectid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "regardingobjectid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "actualdurationminutes",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "actualdurationminutes",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ownerid",
+									"type": "Guid"
+								},
+								"sink": {
+									"name": "ownerid",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "prioritycode",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "prioritycode",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DataverseTasks",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParquetTask",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Delete",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ParquetTask",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.parquet",
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "No valen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-22T05:58:56Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

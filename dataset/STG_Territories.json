@@ -1,0 +1,49 @@
+{
+	"name": "STG_Territories",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "STG Base",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 STG"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_territoryid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "BK_territoryid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "territoryname",
+				"type": "varchar"
+			},
+			{
+				"name": "parentterritory",
+				"type": "varchar"
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "territories_STG"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

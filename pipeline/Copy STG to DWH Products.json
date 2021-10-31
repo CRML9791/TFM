@@ -1,0 +1,197 @@
+{
+	"name": "Copy STG to DWH Products",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set StarProcess",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "StarProcess",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set StarProcess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "STG_to_DWH_Products",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Set OK",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Data flow1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Estatus",
+					"value": {
+						"value": "OK",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set KO",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Data flow1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Estatus",
+					"value": {
+						"value": "KO",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Actividad",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set OK",
+						"dependencyConditions": [
+							"Succeeded",
+							"Skipped"
+						]
+					},
+					{
+						"activity": "Set KO",
+						"dependencyConditions": [
+							"Succeeded",
+							"Skipped"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Actividad",
+					"value": {
+						"value": "Copy Products",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "RecLOG",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set Actividad",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "RecLog",
+						"type": "DataFlowReference",
+						"parameters": {
+							"Fase": {
+								"value": "'@{variables('Fase')}'",
+								"type": "Expression"
+							},
+							"Pipeline": {
+								"value": "'@{pipeline().Pipeline}'",
+								"type": "Expression"
+							},
+							"StarProcess": {
+								"value": "'@{formatDateTime(variables('StarProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+								"type": "Expression"
+							},
+							"EndProcess": {
+								"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+								"type": "Expression"
+							},
+							"Estatus": {
+								"value": "'@{variables('Estatus')}'",
+								"type": "Expression"
+							},
+							"Mensaje": {
+								"value": "'@{variables('Actividad')}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"variables": {
+			"Fase": {
+				"type": "String",
+				"defaultValue": "DWH"
+			},
+			"StarProcess": {
+				"type": "String"
+			},
+			"Estatus": {
+				"type": "String"
+			},
+			"Actividad": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "2 STGToDWH"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-31T09:02:13Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

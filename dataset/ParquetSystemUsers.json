@@ -1,0 +1,37 @@
+{
+	"name": "ParquetSystemUsers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "systemusers",
+				"fileSystem": "tfmfilesystem"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "fullname",
+				"type": "UTF8"
+			},
+			{
+				"name": "systemuserid",
+				"type": "UTF8"
+			},
+			{
+				"name": "parentsystemuserid",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

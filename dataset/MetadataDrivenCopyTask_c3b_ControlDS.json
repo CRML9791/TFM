@@ -1,0 +1,20 @@
+{
+	"name": "MetadataDrivenCopyTask_c3b_ControlDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MetadataLogs",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MetadataDrivenCopyTask_c3b_20211022"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "Tablas2",
+			"table": "MainControlTable_c3b"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

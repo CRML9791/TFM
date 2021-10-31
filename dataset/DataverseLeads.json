@@ -1,0 +1,19 @@
+{
+	"name": "DataverseLeads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse_CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "lead"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

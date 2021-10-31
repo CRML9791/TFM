@@ -1,0 +1,58 @@
+{
+	"name": "DWH_Goals",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_goalid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "goalstar",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "goalend",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "targetmoney",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "targetinteger",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "isamount",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "goals_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

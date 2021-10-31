@@ -1,0 +1,19 @@
+{
+	"name": "DataverseOpportunityProducts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse_CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "opportunityproduct"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
