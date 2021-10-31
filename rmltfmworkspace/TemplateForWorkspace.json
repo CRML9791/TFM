@@ -50,10 +50,6 @@
 		"rmltfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://rmldatalakestoragegen2.dfs.core.windows.net"
-		},
-		"tfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://tfmdlsgen2account.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -15430,7 +15426,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15444,7 +15440,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15453,7 +15449,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15467,7 +15463,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15476,7 +15472,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15490,7 +15486,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15499,7 +15495,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15513,7 +15509,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15522,7 +15518,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15536,7 +15532,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15545,7 +15541,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15559,7 +15555,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15568,7 +15564,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15582,7 +15578,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15591,7 +15587,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15605,7 +15601,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15614,7 +15610,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15628,7 +15624,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15637,7 +15633,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15651,7 +15647,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15660,7 +15656,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Dataverse_CRM",
+					"referenceName": "Dataverse_CRM1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -15674,7 +15670,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Dataverse_CRM1')]"
 			]
 		},
 		{
@@ -15841,10 +15837,6 @@
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15907,19 +15899,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetAppointments')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15935,19 +15921,13 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetEmails')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15963,19 +15943,13 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetGoals')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -15991,19 +15965,13 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetLeads')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16074,19 +16042,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetOpportunity')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16102,19 +16064,13 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetOpportunityProduct')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16130,19 +16086,13 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetPhoneCall')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16199,19 +16149,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetProduct')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16258,19 +16202,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetProductFamily')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16303,19 +16241,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetSystemManagers')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16344,19 +16276,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetSystemUsers')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16385,19 +16311,13 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetTask')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16413,19 +16333,13 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/ParquetTerritories')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
 					"name": "1 Parquet"
 				},
@@ -16458,9 +16372,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/tfmworkspace-WorkspaceDefaultStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/STG_Accounts')]",
@@ -17738,25 +17650,6 @@
 				"type": "AzureSqlDW",
 				"typeProperties": {
 					"connectionString": "[parameters('tfmworkspace-WorkspaceDefaultSqlServer_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/tfmworkspace-WorkspaceDefaultStorage')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('tfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url')]"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
