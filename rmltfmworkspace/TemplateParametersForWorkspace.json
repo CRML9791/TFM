@@ -14,9 +14,6 @@
 		"MetadataLogs_connectionString": {
 			"value": ""
 		},
-		"RAWParquet_connectionString": {
-			"value": ""
-		},
 		"STG Base_connectionString": {
 			"value": ""
 		},
