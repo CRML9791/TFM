@@ -36,7 +36,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "STG_to_DWH_Goals",
+						"referenceName": "STG_to_DWH_Accounts",
 						"type": "DataFlowReference"
 					},
 					"compute": {
