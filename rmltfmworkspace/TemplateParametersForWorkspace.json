@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "rmltfmworkspace"
+		},
+		"DWH_connectionString": {
+			"value": ""
+		},
+		"Dataverse_CRM_password": {
+			"value": ""
+		},
+		"Dataverse_CRM1_password": {
+			"value": ""
+		},
+		"MetadataLogs_connectionString": {
+			"value": ""
+		},
+		"RAWParquet_connectionString": {
+			"value": ""
+		},
+		"STG Base_connectionString": {
+			"value": ""
+		},
+		"rmltfmworkspace-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"tfmworkspace-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"Dataverse_CRM_properties_typeProperties_username": {
+			"value": "admin@CRM371482.onmicrosoft.com"
+		},
+		"Dataverse_CRM1_properties_typeProperties_username": {
+			"value": "admin@CRM371482.onmicrosoft.com"
+		},
+		"rmltfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://rmldatalakestoragegen2.dfs.core.windows.net"
+		},
+		"tfmworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://tfmdlsgen2account.dfs.core.windows.net"
+		}
+	}
+}
