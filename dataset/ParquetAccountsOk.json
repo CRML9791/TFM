@@ -2,7 +2,7 @@
 	"name": "ParquetAccountsOk",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
+			"referenceName": "rmldatalake",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": "accounts",
-				"fileSystem": "tfmfilesystem"
+				"fileSystem": "files"
 			},
 			"compressionCodec": "snappy"
 		},

@@ -1,10 +1,6 @@
 {
 	"name": "ParquetProduct",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "tfmworkspace-WorkspaceDefaultStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "1 Parquet"
 		},
@@ -14,7 +10,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": "products",
-				"fileSystem": "tfmfilesystem"
+				"fileSystem": "files"
 			},
 			"compressionCodec": "snappy"
 		},
