@@ -1,5 +1,5 @@
 {
-	"name": "Copy Parquet to STG 1 PhoneCalls",
+	"name": "Copy Parquet to STG PhoneCalls",
 	"properties": {
 		"activities": [
 			{
@@ -36,7 +36,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "RAW_to_STG_1_PhoneCalls",
+						"referenceName": "RAW_to_STG_PhoneCalls",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -191,7 +191,7 @@
 			"name": "1 ParquetToSTG/Activities"
 		},
 		"annotations": [],
-		"lastPublishTime": "2021-11-01T17:24:21Z"
+		"lastPublishTime": "2021-11-01T17:23:42Z"
 	},
 	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

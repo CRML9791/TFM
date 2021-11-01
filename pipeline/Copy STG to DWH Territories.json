@@ -191,7 +191,7 @@
 			"name": "2 STGToDWH"
 		},
 		"annotations": [],
-		"lastPublishTime": "2021-10-30T05:57:00Z"
+		"lastPublishTime": "2021-10-31T16:57:49Z"
 	},
 	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

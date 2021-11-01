@@ -191,7 +191,7 @@
 			"name": "1 ParquetToSTG/Activities"
 		},
 		"annotations": [],
-		"lastPublishTime": "2021-10-25T05:27:42Z"
+		"lastPublishTime": "2021-11-01T05:58:11Z"
 	},
 	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

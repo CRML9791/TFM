@@ -463,7 +463,7 @@
 			"name": "0 DataverseToParquet"
 		},
 		"annotations": [],
-		"lastPublishTime": "2021-10-24T18:32:50Z"
+		"lastPublishTime": "2021-10-31T16:58:57Z"
 	},
 	"type": "Microsoft.Synapse/workspaces/pipelines"
 }
