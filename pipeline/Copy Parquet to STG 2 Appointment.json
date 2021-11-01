@@ -1,5 +1,5 @@
 {
-	"name": "Copy Parquet to STG Appointment",
+	"name": "Copy Parquet to STG 2 Appointment",
 	"properties": {
 		"activities": [
 			{
