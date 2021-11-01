@@ -36,7 +36,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "RAW_to_STG_Appointment",
+						"referenceName": "RAW_to_STG_2_Appointment",
 						"type": "DataFlowReference"
 					},
 					"compute": {
