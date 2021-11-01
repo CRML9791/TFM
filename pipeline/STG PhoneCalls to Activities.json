@@ -36,7 +36,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "RAW_to_STG_Phone_to_Activities",
+						"referenceName": "RAW_to_STG_1_PhoneCalls_to_Activities",
 						"type": "DataFlowReference"
 					},
 					"compute": {
