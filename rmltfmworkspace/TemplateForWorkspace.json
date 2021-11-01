@@ -13418,11 +13418,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "RAW_to_STG_1_PhoneCalls_to_Activities",
+								"referenceName": "pa",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"phoneCalls": {},
+									"rawphoneCalls": {},
 									"Activities": {},
 									"sink1": {},
 									"sink2": {}
@@ -13593,7 +13593,7 @@
 				"lastPublishTime": "2021-11-01T16:56:21Z"
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/RAW_to_STG_1_PhoneCalls_to_Activities')]",
+				"[concat(variables('workspaceId'), '/dataflows/pa')]",
 				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
 			]
 		},
