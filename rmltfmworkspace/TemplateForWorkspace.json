@@ -4423,6 +4423,228 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Copy STG to DWH Opportunities')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set StarProcess",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "StarProcess",
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set StarProcess",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "STG_to_DWH_Opportunities",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"STG": {},
+									"DWH": {},
+									"SystemUsers": {},
+									"Accounts": {},
+									"Leads": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Set OK",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "OK",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set KO",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "KO",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Actividad",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set OK",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							},
+							{
+								"activity": "Set KO",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Actividad",
+							"value": {
+								"value": "Copy Opportunities",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "RecLOG",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set Actividad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "RecLog",
+								"type": "DataFlowReference",
+								"parameters": {
+									"Fase": {
+										"value": "'@{variables('Fase')}'",
+										"type": "Expression"
+									},
+									"Pipeline": {
+										"value": "'@{pipeline().Pipeline}'",
+										"type": "Expression"
+									},
+									"StarProcess": {
+										"value": "'@{formatDateTime(variables('StarProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"EndProcess": {
+										"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"Estatus": {
+										"value": "'@{variables('Estatus')}'",
+										"type": "Expression"
+									},
+									"Mensaje": {
+										"value": "'@{variables('Actividad')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Fase": {
+						"type": "String",
+						"defaultValue": "DWH"
+					},
+					"StarProcess": {
+						"type": "String"
+					},
+					"Estatus": {
+						"type": "String"
+					},
+					"Actividad": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "2 STGToDWH"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-31T09:02:13Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/STG_to_DWH_Opportunities')]",
+				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Copy STG to DWH ProductFamilies')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -12506,6 +12728,88 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/DWH_Opportunities')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DWH",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 DWH"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SK_opportunityid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "HASHKEY",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ownerid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "parentaccountid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "orignatingleadid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "closeprobability",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "modifiedon",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "createdon",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "purchasetimeframe",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "opportunityratingcode",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "status",
+						"type": "tinyint",
+						"precision": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Oppotunities_DWH"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DWH')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DWH_ProductFamilies')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -15362,7 +15666,7 @@
 							"name": "Actualizar"
 						}
 					],
-					"script": "source(output(\n\t\tparentaccountid as string,\n\t\toriginatingleadid as string,\n\t\tpurchasetimeframe as integer,\n\t\tstatuscode as integer,\n\t\topportunityratingcode as integer,\n\t\townerid as string,\n\t\tmodifiedon as timestamp,\n\t\tcloseprobability as integer,\n\t\tcreatedon as timestamp,\n\t\topportunityid as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> DataverseParquet\nsource(output(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nDataverseParquet derive(RAWHASH = crc32(512,toString(parentaccountid),toString(originatingleadid),toString(purchasetimeframe),toString(purchasetimeframe),toString(statuscode),toString(opportunityratingcode),toString(ownerid),toString(modifiedon))) ~> CrearHASH\nCrearHASH, STG lookup(upper(opportunityid) == BK_opportunityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != RAWHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_opportunityid = opportunityid,\n\t\townerid = Split@Nuevos@ownerid,\n\t\tparentaccountid = Split@Nuevos@parentaccountid,\n\t\torignatingleadid = originatingleadid,\n\t\tcloseprobability = Split@Nuevos@closeprobability,\n\t\tmodifiedon = Split@Nuevos@modifiedon,\n\t\tcreatedon = Split@Nuevos@createdon,\n\t\tpurchasetimeframe = Split@Nuevos@purchasetimeframe,\n\t\topportunityratingcode = Split@Nuevos@opportunityratingcode,\n\t\tstatus = statuscode\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_opportunityid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_opportunityid,\n\t\townerid = Split@Actualizaciones@ownerid,\n\t\tparentaccountid = Split@Actualizaciones@parentaccountid,\n\t\torignatingleadid,\n\t\tcloseprobability = Split@Actualizaciones@closeprobability,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon,\n\t\tcreatedon = Split@Actualizaciones@createdon,\n\t\tpurchasetimeframe = Split@Actualizaciones@purchasetimeframe,\n\t\topportunityratingcode = Split@Actualizaciones@opportunityratingcode,\n\t\tstatus = statuscode\n\t)) ~> Actualizaciones"
+					"script": "source(output(\n\t\tparentaccountid as string,\n\t\toriginatingleadid as string,\n\t\tpurchasetimeframe as integer,\n\t\tstatuscode as integer,\n\t\topportunityratingcode as integer,\n\t\townerid as string,\n\t\tmodifiedon as timestamp,\n\t\tcloseprobability as integer,\n\t\tcreatedon as timestamp,\n\t\topportunityid as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> DataverseParquet\nsource(output(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nDataverseParquet derive(RAWHASH = crc32(512,upper(toString(parentaccountid)),upper(toString(originatingleadid)),toString(purchasetimeframe),toString(purchasetimeframe),toString(statuscode),toString(opportunityratingcode),upper(toString(ownerid)),toString(modifiedon))) ~> CrearHASH\nCrearHASH, STG lookup(upper(opportunityid) == BK_opportunityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != RAWHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_opportunityid = opportunityid,\n\t\townerid = Split@Nuevos@ownerid,\n\t\tparentaccountid = Split@Nuevos@parentaccountid,\n\t\torignatingleadid = originatingleadid,\n\t\tcloseprobability = Split@Nuevos@closeprobability,\n\t\tmodifiedon = Split@Nuevos@modifiedon,\n\t\tcreatedon = Split@Nuevos@createdon,\n\t\tpurchasetimeframe = Split@Nuevos@purchasetimeframe,\n\t\topportunityratingcode = Split@Nuevos@opportunityratingcode,\n\t\tstatus = statuscode\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_opportunityid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = RAWHASH,\n\t\tBK_opportunityid,\n\t\townerid = Split@Actualizaciones@ownerid,\n\t\tparentaccountid = Split@Actualizaciones@parentaccountid,\n\t\torignatingleadid,\n\t\tcloseprobability = Split@Actualizaciones@closeprobability,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon,\n\t\tcreatedon = Split@Actualizaciones@createdon,\n\t\tpurchasetimeframe = Split@Actualizaciones@purchasetimeframe,\n\t\topportunityratingcode = Split@Actualizaciones@opportunityratingcode,\n\t\tstatus = statuscode\n\t)) ~> Actualizaciones"
 				}
 			},
 			"dependsOn": [
@@ -16238,6 +16542,109 @@
 				"[concat(variables('workspaceId'), '/datasets/STG_SystemUsers')]",
 				"[concat(variables('workspaceId'), '/datasets/STG_Products')]",
 				"[concat(variables('workspaceId'), '/datasets/STG_Territories')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/STG_to_DWH_Opportunities')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "2_STG_to_DWH"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "STG_Opportunities",
+								"type": "DatasetReference"
+							},
+							"name": "STG"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_Opportunities",
+								"type": "DatasetReference"
+							},
+							"name": "DWH"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_SystemUsers",
+								"type": "DatasetReference"
+							},
+							"name": "SystemUsers"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_Accounts",
+								"type": "DatasetReference"
+							},
+							"name": "Accounts"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_Leads",
+								"type": "DatasetReference"
+							},
+							"name": "Leads"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_Opportunities",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_Opportunities",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DWHHASH"
+						},
+						{
+							"name": "Lookup1"
+						},
+						{
+							"name": "ConditionalSplit1"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "AlterRow2"
+						},
+						{
+							"name": "JoinSystemUser"
+						},
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "JoinAccount"
+						},
+						{
+							"name": "JoinLead"
+						}
+					],
+					"script": "source(output(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tparentaccountid as integer,\n\t\torignatingleadid as integer,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nsource(output(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SystemUsers\nsource(output(\n\t\tSK_accountid as integer,\n\t\tHASHKEY as long,\n\t\tBK_accountid as string,\n\t\tname as string,\n\t\townerid as string,\n\t\torignatingleadid as string,\n\t\trenevue as decimal(19,4),\n\t\tnumberofemployees as integer,\n\t\tterritoryid as string,\n\t\tindustrycode as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Accounts\nsource(output(\n\t\tSK_leadid as integer,\n\t\tBK_leadid as string,\n\t\tcreatedon as timestamp,\n\t\townerid as string,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tcustom_territorioid as string,\n\t\tcustom_productid as string,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\tHASHKEY as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Leads\nSTG derive(DWHHASH = crc32(512,upper(toString(parentaccountid)),upper(toString(orignatingleadid)),toString(purchasetimeframe),toString(purchasetimeframe),toString(status),toString(opportunityratingcode),upper(toString(ownerid)),toString(modifiedon))) ~> DWHHASH\nDWHHASH, DWH lookup(STG@SK_opportunityid == DWH@SK_opportunityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWH@HASHKEY),\n\tDWH@HASHKEY!=STG@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1, SystemUsers join(ConditionalSplit1@Nuevos@ownerid == BK_systemuserid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSystemUser\nJoinLead derive(STGUser = SK_systemuserid,\n\t\tSTGAccount = SK_accountid,\n\t\tSTGLead = SK_leadid) ~> DerivedColumn1\nJoinSystemUser, Accounts join(ConditionalSplit1@Nuevos@parentaccountid == BK_accountid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinAccount\nJoinAccount, Leads join(ConditionalSplit1@Nuevos@orignatingleadid == BK_leadid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinLead\nDerivedColumn1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tparentaccountid as integer,\n\t\torignatingleadid as integer,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tHASHKEY = DWHHASH,\n\t\townerid = STGUser,\n\t\tparentaccountid = STGAccount,\n\t\torignatingleadid = STGLead,\n\t\tcloseprobability = ConditionalSplit1@Nuevos@closeprobability,\n\t\tmodifiedon = ConditionalSplit1@Nuevos@modifiedon,\n\t\tcreatedon = ConditionalSplit1@Nuevos@createdon,\n\t\tpurchasetimeframe = ConditionalSplit1@Nuevos@purchasetimeframe,\n\t\topportunityratingcode = ConditionalSplit1@Nuevos@opportunityratingcode,\n\t\tstatus = ConditionalSplit1@Nuevos@status\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tparentaccountid as integer,\n\t\torignatingleadid as integer,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_opportunityid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink2"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/STG_Opportunities')]",
+				"[concat(variables('workspaceId'), '/datasets/DWH_Opportunities')]",
+				"[concat(variables('workspaceId'), '/datasets/STG_SystemUsers')]",
+				"[concat(variables('workspaceId'), '/datasets/STG_Accounts')]",
+				"[concat(variables('workspaceId'), '/datasets/STG_Leads')]"
 			]
 		},
 		{
