@@ -1121,7 +1121,7 @@
 					}
 				},
 				"folder": {
-					"name": "1 ParquetToSTG"
+					"name": "1 ParquetToSTG/Activities"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-10-25T05:20:46Z"
@@ -1340,7 +1340,7 @@
 					}
 				},
 				"folder": {
-					"name": "1 ParquetToSTG"
+					"name": "1 ParquetToSTG/Activities"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-10-25T05:21:59Z"
@@ -2435,7 +2435,7 @@
 					}
 				},
 				"folder": {
-					"name": "1 ParquetToSTG"
+					"name": "1 ParquetToSTG/Activities"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-10-25T06:07:12Z"
@@ -3530,7 +3530,7 @@
 					}
 				},
 				"folder": {
-					"name": "1 ParquetToSTG"
+					"name": "1 ParquetToSTG/Activities"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-10-25T05:27:42Z"
@@ -15642,7 +15642,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "1_RAW_to_STG"
+					"name": "1_RAW_to_STG/Acitivities"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -15709,7 +15709,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "1_RAW_to_STG"
+					"name": "1_RAW_to_STG/Acitivities"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -16044,7 +16044,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "1_RAW_to_STG"
+					"name": "1_RAW_to_STG/Acitivities"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -16379,7 +16379,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "1_RAW_to_STG"
+					"name": "1_RAW_to_STG/Acitivities"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
