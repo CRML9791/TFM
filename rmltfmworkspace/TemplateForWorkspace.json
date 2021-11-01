@@ -1390,7 +1390,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "RAW_to_STG_Appointment",
+								"referenceName": "RAW_to_STG_2_Appointment",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -1565,7 +1565,7 @@
 				"lastPublishTime": "2021-11-01T05:57:55Z"
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/RAW_to_STG_Appointment')]",
+				"[concat(variables('workspaceId'), '/dataflows/RAW_to_STG_2_Appointment')]",
 				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
 			]
 		},
@@ -13160,6 +13160,225 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/STG Appointmens to Activities')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set StarProcess",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "StarProcess",
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set StarProcess",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "RAW_to_STG_Appointments_to_Activities",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"appointments": {},
+									"Activities": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Set OK",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "OK",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set KO",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "KO",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Actividad",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set OK",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							},
+							{
+								"activity": "Set KO",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Actividad",
+							"value": {
+								"value": "Copy Phone to Activity",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "RecLOG",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set Actividad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "RecLog",
+								"type": "DataFlowReference",
+								"parameters": {
+									"Fase": {
+										"value": "'@{variables('Fase')}'",
+										"type": "Expression"
+									},
+									"Pipeline": {
+										"value": "'@{pipeline().Pipeline}'",
+										"type": "Expression"
+									},
+									"StarProcess": {
+										"value": "'@{formatDateTime(variables('StarProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"EndProcess": {
+										"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"Estatus": {
+										"value": "'@{variables('Estatus')}'",
+										"type": "Expression"
+									},
+									"Mensaje": {
+										"value": "'@{variables('Actividad')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Fase": {
+						"type": "String",
+						"defaultValue": "STG"
+					},
+					"StarProcess": {
+						"type": "String"
+					},
+					"Estatus": {
+						"type": "String"
+					},
+					"Actividad": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "1 ParquetToSTG/Activities"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-01T16:56:21Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/RAW_to_STG_Appointments_to_Activities')]",
+				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/STG PhoneCalls to Activities')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -16440,7 +16659,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/RAW_to_STG_Appointment')]",
+			"name": "[concat(parameters('workspaceName'), '/RAW_to_STG_Appointments_to_Activities')]",
 			"type": "Microsoft.Synapse/workspaces/dataflows",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -16452,58 +16671,58 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "ParquetAppointments",
-								"type": "DatasetReference"
-							},
-							"name": "DataverseParquet"
-						},
-						{
-							"dataset": {
 								"referenceName": "STG_Appointment",
 								"type": "DatasetReference"
 							},
-							"name": "STG"
+							"name": "appointments"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_Activities",
+								"type": "DatasetReference"
+							},
+							"name": "Activities"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "STG_Appointment",
+								"referenceName": "STG_Activities",
 								"type": "DatasetReference"
 							},
-							"name": "Nuevos"
+							"name": "sink1"
 						},
 						{
 							"dataset": {
-								"referenceName": "STG_Appointment",
+								"referenceName": "STG_Activities",
 								"type": "DatasetReference"
 							},
-							"name": "Actualizaciones"
+							"name": "sink2"
 						}
 					],
 					"transformations": [
 						{
-							"name": "CrearHASH"
-						},
-						{
 							"name": "Lookup1"
 						},
 						{
-							"name": "Split"
+							"name": "ConditionalSplit1"
 						},
 						{
-							"name": "Insertar"
+							"name": "DerivedColumn1"
 						},
 						{
-							"name": "Actualizar"
+							"name": "AlterRow1"
+						},
+						{
+							"name": "AlterRow2"
 						}
 					],
-					"script": "source(output(\n\t\tisalldayevent as boolean,\n\t\tactivityid as string,\n\t\tstatuscode as integer,\n\t\tsubject as string,\n\t\tscheduledend as timestamp,\n\t\tregardingobjectid as string,\n\t\tactualdurationminutes as integer,\n\t\townerid as string,\n\t\tprioritycode as integer,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> DataverseParquet\nsource(output(\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nDataverseParquet derive(RAWHASH = crc32(512,toString(ownerid),toString(statuscode),toString(scheduledend),toString(prioritycode))) ~> CrearHASH\nCrearHASH, STG lookup(upper(activityid) == BK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(HASHKEY),\n\tHASHKEY != RAWHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tactivitytype,\n\t\tHASHKEY = RAWHASH,\n\t\tBK_activityid = activityid,\n\t\townerid = Split@Nuevos@ownerid,\n\t\tregardingid = regardingobjectid,\n\t\tduration,\n\t\tmodifiedon = Split@Nuevos@modifiedon,\n\t\tpriority,\n\t\tstatus,\n\t\tduedate\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_activityid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tactivitytype,\n\t\tHASHKEY = RAWHASH,\n\t\tBK_activityid,\n\t\townerid = Split@Actualizaciones@ownerid,\n\t\tregardingid = regardingobjectid,\n\t\tduration,\n\t\tmodifiedon = Split@Actualizaciones@modifiedon,\n\t\tpriority,\n\t\tstatus,\n\t\tduedate\n\t)) ~> Actualizaciones"
+					"script": "source(output(\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> appointments\nsource(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Activities\nDerivedColumn1, Activities lookup(appointments@BK_activityid == Activities@BK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(Activities@HASHKEY),\n\tHashActividadesAppointment!=Activities@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nappointments derive(HashActividadesAppointment = crc32(512,upper(toString(ownerid)),toString(status),toString(duedate),toString(priority),toString(duration),toString(modifiedon))) ~> DerivedColumn1\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tactivitytype = ConditionalSplit1@Nuevos@activitytype,\n\t\tHASHKEY = HashActividadesAppointment,\n\t\tBK_activityid = ConditionalSplit1@Nuevos@BK_activityid,\n\t\townerid = ConditionalSplit1@Nuevos@ownerid,\n\t\tregardingid = ConditionalSplit1@Nuevos@regardingid,\n\t\tduration = ConditionalSplit1@Nuevos@duration,\n\t\tmodifiedon = ConditionalSplit1@Nuevos@modifiedon,\n\t\tpriority = ConditionalSplit1@Nuevos@priority,\n\t\tstatus = ConditionalSplit1@Nuevos@status,\n\t\tduedate = ConditionalSplit1@Nuevos@duedate\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_activityid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_activityid,\n\t\tactivitytype = ConditionalSplit1@Actualizaciones@activitytype,\n\t\tHASHKEY = HashActividadesAppointment,\n\t\tBK_activityid = ConditionalSplit1@Actualizaciones@BK_activityid,\n\t\townerid = ConditionalSplit1@Actualizaciones@ownerid,\n\t\tregardingid = ConditionalSplit1@Actualizaciones@regardingid,\n\t\tduration = ConditionalSplit1@Actualizaciones@duration,\n\t\tmodifiedon = ConditionalSplit1@Actualizaciones@modifiedon,\n\t\tpriority = ConditionalSplit1@Actualizaciones@priority,\n\t\tstatus = ConditionalSplit1@Actualizaciones@status,\n\t\tduedate = ConditionalSplit1@Actualizaciones@duedate\n\t)) ~> sink2"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/ParquetAppointments')]",
-				"[concat(variables('workspaceId'), '/datasets/STG_Appointment')]"
+				"[concat(variables('workspaceId'), '/datasets/STG_Appointment')]",
+				"[concat(variables('workspaceId'), '/datasets/STG_Activities')]"
 			]
 		},
 		{
@@ -18375,73 +18594,6 @@
 				"type": "SqlQuery"
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/RAW_to_STG_Appointments_to_Activities')]",
-			"type": "Microsoft.Synapse/workspaces/dataflows",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "1_RAW_to_STG/Acitivities"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "STG_Appointment",
-								"type": "DatasetReference"
-							},
-							"name": "appointments"
-						},
-						{
-							"dataset": {
-								"referenceName": "STG_Activities",
-								"type": "DatasetReference"
-							},
-							"name": "Activities"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "STG_Activities",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "STG_Activities",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Lookup1"
-						},
-						{
-							"name": "ConditionalSplit1"
-						},
-						{
-							"name": "DerivedColumn1"
-						},
-						{
-							"name": "AlterRow1"
-						},
-						{
-							"name": "AlterRow2"
-						}
-					],
-					"script": "source(output(\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> appointments\nsource(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Activities\nDerivedColumn1, Activities lookup(appointments@BK_activityid == Activities@BK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(Activities@HASHKEY),\n\tHashActividadesAppointment!=Activities@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nappointments derive(HashActividadesAppointment = crc32(512,upper(toString(ownerid)),toString(status),toString(duedate),toString(priority),toString(duration),toString(modifiedon))\r\n) ~> DerivedColumn1\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nConditionalSplit1@Actualizaciones alterRow(updateIf(true())) ~> AlterRow2\nAlterRow1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tactivitytype = ConditionalSplit1@Nuevos@activitytype,\n\t\tHASHKEY = HashActividadesAppointment,\n\t\tBK_activityid = ConditionalSplit1@Nuevos@BK_activityid,\n\t\townerid = ConditionalSplit1@Nuevos@ownerid,\n\t\tregardingid = ConditionalSplit1@Nuevos@regardingid,\n\t\tduration = ConditionalSplit1@Nuevos@duration,\n\t\tmodifiedon = ConditionalSplit1@Nuevos@modifiedon,\n\t\tpriority = ConditionalSplit1@Nuevos@priority,\n\t\tstatus = ConditionalSplit1@Nuevos@status,\n\t\tduedate = ConditionalSplit1@Nuevos@duedate\n\t)) ~> sink1\nAlterRow2 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SK_activityid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_activityid,\n\t\tactivitytype = ConditionalSplit1@Actualizaciones@activitytype,\n\t\tHASHKEY = HashActividadesAppointment,\n\t\tBK_activityid = ConditionalSplit1@Actualizaciones@BK_activityid,\n\t\townerid = ConditionalSplit1@Actualizaciones@ownerid,\n\t\tregardingid = ConditionalSplit1@Actualizaciones@regardingid,\n\t\tduration = ConditionalSplit1@Actualizaciones@duration,\n\t\tmodifiedon = ConditionalSplit1@Actualizaciones@modifiedon,\n\t\tpriority = ConditionalSplit1@Actualizaciones@priority,\n\t\tstatus = ConditionalSplit1@Actualizaciones@status,\n\t\tduedate = ConditionalSplit1@Actualizaciones@duedate\n\t)) ~> sink2"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/STG_Appointment')]",
-				"[concat(variables('workspaceId'), '/datasets/STG_Activities')]"
-			]
 		}
 	]
 }
