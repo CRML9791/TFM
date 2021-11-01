@@ -1,0 +1,45 @@
+{
+	"name": "RAW_to_STG_Full_Activities",
+	"properties": {
+		"folder": {
+			"name": "1_RAW_to_STG/Acitivities"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "Actividades"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "STGActivities"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "STG_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CrearHash"
+				},
+				{
+					"name": "Lookup1"
+				}
+			],
+			"script": "source(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Actividades\nsource(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGActivities\nActividades derive(STGHash = crc32(512,toString(activitytype),upper(toString(ownerid)),upper(toString(regardingid)),toString(duration),toString(priority),toString(direction),toString(duedate))) ~> CrearHash\nCrearHash, STGActivities lookup(Actividades@BK_activityid == STGActivities@BK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+		}
+	}
+}
