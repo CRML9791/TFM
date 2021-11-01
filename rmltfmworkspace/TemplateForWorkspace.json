@@ -2227,225 +2227,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Copy Parquet to STG PhoneCalls Activities')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Set StarProcess",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "StarProcess",
-							"value": {
-								"value": "@utcnow()",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Set StarProcess",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "RAW_to_STG_Phone_to_Activities",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"Actividades": {},
-									"STGPhoneCalls": {},
-									"sink1": {},
-									"sink2": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Set OK",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Data flow1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "Estatus",
-							"value": {
-								"value": "OK",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set KO",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Data flow1",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "Estatus",
-							"value": {
-								"value": "KO",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set Actividad",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set OK",
-								"dependencyConditions": [
-									"Succeeded",
-									"Skipped"
-								]
-							},
-							{
-								"activity": "Set KO",
-								"dependencyConditions": [
-									"Succeeded",
-									"Skipped"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "Actividad",
-							"value": {
-								"value": "Copy Phone to Activity",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "RecLOG",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Set Actividad",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "RecLog",
-								"type": "DataFlowReference",
-								"parameters": {
-									"Fase": {
-										"value": "'@{variables('Fase')}'",
-										"type": "Expression"
-									},
-									"Pipeline": {
-										"value": "'@{pipeline().Pipeline}'",
-										"type": "Expression"
-									},
-									"StarProcess": {
-										"value": "'@{formatDateTime(variables('StarProcess'),'yyyy-MM-dd HH:mm:ss')}'",
-										"type": "Expression"
-									},
-									"EndProcess": {
-										"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
-										"type": "Expression"
-									},
-									"Estatus": {
-										"value": "'@{variables('Estatus')}'",
-										"type": "Expression"
-									},
-									"Mensaje": {
-										"value": "'@{variables('Actividad')}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"Fase": {
-						"type": "String",
-						"defaultValue": "STG"
-					},
-					"StarProcess": {
-						"type": "String"
-					},
-					"Estatus": {
-						"type": "String"
-					},
-					"Actividad": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "1 ParquetToSTG/Activities"
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-10-25T05:20:46Z"
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/RAW_to_STG_Phone_to_Activities')]",
-				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Copy Parquet to STG PhoneCalls')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -12938,6 +12719,225 @@
 				"[concat(variables('workspaceId'), '/datasets/ParquetTerritories')]",
 				"[concat(variables('workspaceId'), '/dataflows/RecLog')]",
 				"[concat(variables('workspaceId'), '/datasets/DataverseTerritories')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/STG PhoneCalls to Activities')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set StarProcess",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "StarProcess",
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set StarProcess",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "RAW_to_STG_Phone_to_Activities",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Actividades": {},
+									"STGPhoneCalls": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Set OK",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "OK",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set KO",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Data flow1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Estatus",
+							"value": {
+								"value": "KO",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Actividad",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set OK",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							},
+							{
+								"activity": "Set KO",
+								"dependencyConditions": [
+									"Succeeded",
+									"Skipped"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Actividad",
+							"value": {
+								"value": "Copy Phone to Activity",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "RecLOG",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set Actividad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "RecLog",
+								"type": "DataFlowReference",
+								"parameters": {
+									"Fase": {
+										"value": "'@{variables('Fase')}'",
+										"type": "Expression"
+									},
+									"Pipeline": {
+										"value": "'@{pipeline().Pipeline}'",
+										"type": "Expression"
+									},
+									"StarProcess": {
+										"value": "'@{formatDateTime(variables('StarProcess'),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"EndProcess": {
+										"value": "'@{formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')}'",
+										"type": "Expression"
+									},
+									"Estatus": {
+										"value": "'@{variables('Estatus')}'",
+										"type": "Expression"
+									},
+									"Mensaje": {
+										"value": "'@{variables('Actividad')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Fase": {
+						"type": "String",
+						"defaultValue": "STG"
+					},
+					"StarProcess": {
+						"type": "String"
+					},
+					"Estatus": {
+						"type": "String"
+					},
+					"Actividad": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "1 ParquetToSTG/Activities"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-25T05:20:46Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/RAW_to_STG_Phone_to_Activities')]",
+				"[concat(variables('workspaceId'), '/dataflows/RecLog')]"
 			]
 		},
 		{
