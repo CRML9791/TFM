@@ -2,7 +2,7 @@
 	"name": "RAW_to_STG_Appointment",
 	"properties": {
 		"folder": {
-			"name": "1_RAW_to_STG"
+			"name": "1_RAW_to_STG/Acitivities"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
