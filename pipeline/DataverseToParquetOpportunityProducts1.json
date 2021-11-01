@@ -206,7 +206,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "CommonDataServiceForAppsSource",
-						"query": "<fetch>\n<entity name=\"opportunityproduct\">\n<attribute name=\"productid\"/>\n<attribute name=\"priceperunit\"/>\n<attribute name=\"quantity\"/>\n<attribute name=\"extendedamount\"/>\n<attribute name=\"opportunityproductid\"/>\n<attribute name=\"opportunityid\"/>\n<filter type=\"and\">\n<!--<condition attribute=\"modifiedon\" operator=\"yesterday\"/>-->\n</filter>\n</entity>\n</fetch>"
+						"query": "<fetch>\n<entity name=\"opportunityproduct\">\n<attribute name=\"productid\"/>\n<attribute name=\"priceperunit\"/>\n<attribute name=\"quantity\"/>\n<attribute name=\"extendedamount\"/>\n<attribute name=\"opportunityproductid\"/>\n<attribute name=\"opportunityid\"/>\n<attribute name=\"modifiedon\"/>\n<filter type=\"and\">\n<!--<condition attribute=\"modifiedon\" operator=\"yesterday\"/>-->\n</filter>\n</entity>\n</fetch>"
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -259,6 +259,16 @@
 								"sink": {
 									"name": "priceperunit",
 									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "modifiedon",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "modifiedon",
+									"type": "DateTime"
 								}
 							},
 							{
