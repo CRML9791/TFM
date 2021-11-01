@@ -1,0 +1,62 @@
+{
+	"name": "DWH_OpportunityProducts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_opportunityproductid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "SK oportunityid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SK_productid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "amount",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "quantity",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "priceunit",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "modifiedon",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "opportunityproducts_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
