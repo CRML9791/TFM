@@ -12820,6 +12820,72 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/DWH_OpportunityProducts')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DWH",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 DWH"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SK_opportunityproductid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "HASHKEY",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "SK oportunityid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SK_productid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "amount",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "quantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "priceunit",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "modifiedon",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "opportunityproducts_DWH"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DWH')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DWH_ProductFamilies')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -16655,6 +16721,98 @@
 				"[concat(variables('workspaceId'), '/datasets/STG_SystemUsers')]",
 				"[concat(variables('workspaceId'), '/datasets/STG_Accounts')]",
 				"[concat(variables('workspaceId'), '/datasets/STG_Leads')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/STG_to_DWH_OpportunityProducts')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "2_STG_to_DWH"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "STG_OpportunityProducts",
+								"type": "DatasetReference"
+							},
+							"name": "STG"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_OpportunityProducts",
+								"type": "DatasetReference"
+							},
+							"name": "DWH"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_Products",
+								"type": "DatasetReference"
+							},
+							"name": "Products"
+						},
+						{
+							"dataset": {
+								"referenceName": "STG_Opportunities",
+								"type": "DatasetReference"
+							},
+							"name": "Opportunities"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_OpportunityProducts",
+								"type": "DatasetReference"
+							},
+							"name": "Nuevos"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_OpportunityProducts",
+								"type": "DatasetReference"
+							},
+							"name": "Actualizaciones"
+						}
+					],
+					"transformations": [
+						{
+							"name": "CrearHASH"
+						},
+						{
+							"name": "Lookup1"
+						},
+						{
+							"name": "Split"
+						},
+						{
+							"name": "Insertar"
+						},
+						{
+							"name": "Actualizar"
+						},
+						{
+							"name": "JoinProducts"
+						},
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "JoinOpportunity"
+						}
+					],
+					"script": "source(output(\n\t\tSK_OpportunityProductid as integer,\n\t\tHASHKEY as long,\n\t\tBK_OpportunityProductid as string,\n\t\tproductid as string,\n\t\topportunityid as string,\n\t\tamount as decimal(19,4),\n\t\tpriceunit as decimal(19,4),\n\t\tquantity as integer,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STG\nsource(output(\n\t\tSK_OpportunityProductid as integer,\n\t\tHASHKEY as long,\n\t\tBK_OpportunityProductid as string,\n\t\tproductid as string,\n\t\topportunityid as string,\n\t\tamount as decimal(19,4),\n\t\tpriceunit as decimal(19,4),\n\t\tquantity as integer,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWH\nsource(output(\n\t\tSK_productid as integer,\n\t\tHASHKEY as long,\n\t\tBK_productid as string,\n\t\tproductnumber as string,\n\t\tproductname as string,\n\t\tBK_family as string,\n\t\tstandarcost as decimal(19,4),\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Products\nsource(output(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Opportunities\nSTG derive(STGHASH = crc32(512,toInteger(toString(amount),'############'),toInteger(toString(priceunit),'############'),toInteger(toString(quantity),'####'))) ~> CrearHASH\nCrearHASH, DWH lookup(STG@SK_OpportunityProductid == DWH@SK_OpportunityProductid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWH@HASHKEY),\n\tDWH@HASHKEY != STGHASH,\n\tdisjoint: false) ~> Split@(Nuevos, Actualizaciones, Nada)\nSplit@Nuevos alterRow(insertIf(true())) ~> Insertar\nSplit@Actualizaciones alterRow(updateIf(true())) ~> Actualizar\nInsertar, Products join(Split@Nuevos@productid == BK_productid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinProducts\nJoinOpportunity derive(STGProduct = SK_productid,\n\t\tSTGOpportunity = SK_opportunityid,\n\t\t{Rectify Modifiedon} = toDate(Split@Nuevos@modifiedon)) ~> DerivedColumn1\nJoinProducts, Opportunities join(Split@Nuevos@opportunityid == BK_opportunityid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinOpportunity\nDerivedColumn1 sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityproductid as integer,\n\t\tHASHKEY as long,\n\t\t{SK oportunityid} as integer,\n\t\tSK_productid as integer,\n\t\tamount as decimal(19,4),\n\t\tquantity as integer,\n\t\tpriceunit as decimal(19,4),\n\t\tmodifiedon as date\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSK_opportunityproductid = Split@Nuevos@SK_OpportunityProductid,\n\t\tHASHKEY = STGHASH,\n\t\t{SK oportunityid} = STGOpportunity,\n\t\tSK_productid = STGProduct,\n\t\tamount = Split@Nuevos@amount,\n\t\tquantity = Split@Nuevos@quantity,\n\t\tpriceunit = Split@Nuevos@priceunit,\n\t\tmodifiedon = {Rectify Modifiedon}\n\t)) ~> Nuevos\nActualizar sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_opportunityproductid as integer,\n\t\tHASHKEY as long,\n\t\t{SK oportunityid} as integer,\n\t\tSK_productid as integer,\n\t\tamount as decimal(19,4),\n\t\tquantity as integer,\n\t\tpriceunit as decimal(19,4),\n\t\tmodifiedon as date\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['BK_OpportunityProductid'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Actualizaciones"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/STG_OpportunityProducts')]",
+				"[concat(variables('workspaceId'), '/datasets/STG_Products')]",
+				"[concat(variables('workspaceId'), '/datasets/STG_Opportunities')]",
+				"[concat(variables('workspaceId'), '/datasets/DWH_OpportunityProducts')]"
 			]
 		},
 		{
