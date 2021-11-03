@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "rmltfmworkspace6"
+		},
+		"DWH_connectionString": {
+			"value": ""
+		},
+		"Dataverse_password": {
+			"value": ""
+		},
+		"MetadataLogs_connectionString": {
+			"value": ""
+		},
+		"STG Base_connectionString": {
+			"value": ""
+		},
+		"rmltfmworkspace6-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"Dataverse_properties_typeProperties_username": {
+			"value": "admin@CRM371482.onmicrosoft.com"
+		},
+		"rmltfmworkspace6-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://rmlaccountdatalake.dfs.core.windows.net"
+		}
+	}
+}
