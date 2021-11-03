@@ -2,7 +2,7 @@
 	"name": "DataverseTasks",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Dataverse_CRM1",
+			"referenceName": "Dataverse",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {

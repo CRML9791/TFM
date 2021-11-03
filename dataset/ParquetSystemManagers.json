@@ -2,7 +2,7 @@
 	"name": "ParquetSystemManagers",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "rmldatalake",
+			"referenceName": "rmltfmworkspace6-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": "systemusersmanagers",
-				"fileSystem": "files"
+				"fileSystem": "tfmfiles"
 			},
 			"compressionCodec": "snappy"
 		},
