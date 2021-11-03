@@ -2,7 +2,7 @@
 	"name": "ParquetTerritories",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "rmltfmworkspace6-WorkspaceDefaultStorage",
+			"referenceName": "AzureDataLakeStorage6",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
