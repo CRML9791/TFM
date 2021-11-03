@@ -1,6 +1,10 @@
 {
 	"name": "ParquetEmails",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "rmltfmworkspace6-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
 		"folder": {
 			"name": "1 Parquet"
 		},
@@ -10,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": "emails",
-				"fileSystem": "files"
+				"fileSystem": "tfmfiles"
 			},
 			"compressionCodec": "snappy"
 		},

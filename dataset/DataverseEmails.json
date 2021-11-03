@@ -1,6 +1,10 @@
 {
 	"name": "DataverseEmails",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse",
+			"type": "LinkedServiceReference"
+		},
 		"folder": {
 			"name": "0 Dataverse"
 		},
