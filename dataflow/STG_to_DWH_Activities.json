@@ -20,16 +20,30 @@
 						"type": "DatasetReference"
 					},
 					"name": "DWHActivities"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_SystemUsers",
+						"type": "DatasetReference"
+					},
+					"name": "SystemUsers"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_Leads",
+						"type": "DatasetReference"
+					},
+					"name": "Lead"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_Opportunities",
+						"type": "DatasetReference"
+					},
+					"name": "Opportunity"
 				}
 			],
 			"sinks": [
-				{
-					"dataset": {
-						"referenceName": "DWH_Activities",
-						"type": "DatasetReference"
-					},
-					"name": "Nuevo"
-				},
 				{
 					"dataset": {
 						"referenceName": "DWH_Activities",
@@ -47,9 +61,24 @@
 				},
 				{
 					"name": "ConditionalSplit1"
+				},
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Join2"
+				},
+				{
+					"name": "Join3"
 				}
 			],
-			"script": "source(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGActivities\nsource(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWHActivities\nSTGActivities derive(HASHSTG = crc32(512,upper(toString(ownerid)),toString(status),toString(duedate),toString(priority),toString(duration),toString(modifiedon),toString(activitytype))) ~> HASHSTG\nHASHSTG, DWHActivities lookup(STGActivities@SK_activityid == DWHActivities@SK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWHActivities@HASHKEY),\n\tHASHSTG!=DWHActivities@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Nuevo\nConditionalSplit1@Actualizaciones sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Actualiza"
+			"script": "source(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGActivities\nsource(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWHActivities\nsource(output(\n\t\tSK_systemuserid as integer,\n\t\tHASHKEY as long,\n\t\tBK_systemuserid as string,\n\t\tfullname as string,\n\t\tparentsystemuserid as string,\n\t\tmodifiedon as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SystemUsers\nsource(output(\n\t\tSK_leadid as integer,\n\t\tBK_leadid as string,\n\t\tcreatedon as timestamp,\n\t\townerid as string,\n\t\tleadsource as integer,\n\t\tstatuscode as integer,\n\t\tindustry as integer,\n\t\tmodifiedon as timestamp,\n\t\tcustom_territorioid as string,\n\t\tcustom_productid as string,\n\t\trating as integer,\n\t\temployees as integer,\n\t\trevenue as decimal(19,4),\n\t\tHASHKEY as long\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Lead\nsource(output(\n\t\tSK_opportunityid as integer,\n\t\tHASHKEY as long,\n\t\tBK_opportunityid as string,\n\t\townerid as string,\n\t\tparentaccountid as string,\n\t\torignatingleadid as string,\n\t\tcloseprobability as integer,\n\t\tmodifiedon as timestamp,\n\t\tcreatedon as timestamp,\n\t\tpurchasetimeframe as integer,\n\t\topportunityratingcode as integer,\n\t\tstatus as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Opportunity\nSTGActivities derive(HASHSTG = crc32(512,upper(toString(ownerid)),toString(status),toString(duedate),toString(priority),toString(duration),toString(modifiedon),toString(activitytype))) ~> HASHSTG\nHASHSTG, DWHActivities lookup(STGActivities@SK_activityid == DWHActivities@SK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWHActivities@HASHKEY),\n\tHASHSTG!=DWHActivities@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos alterRow(insertIf(true())) ~> AlterRow1\nAlterRow1, SystemUsers join(ConditionalSplit1@Nuevos@ownerid == BK_systemuserid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin3 derive(STGOwner = BK_systemuserid,\n\t\tSTGLead = BK_leadid,\n\t\tSTGOpportunity = BK_opportunityid) ~> DerivedColumn1\nJoin1, Lead join(regardingid == BK_leadid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join2\nJoin2, Opportunity join(regardingid == BK_opportunityid,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join3\nConditionalSplit1@Actualizaciones sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Actualiza"
 		}
 	}
 }
