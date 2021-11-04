@@ -1,0 +1,82 @@
+{
+	"name": "DWH_Activities",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DWH",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 DWH"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK_activityid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "activitytype",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HASHKEY",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ownerid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "duration",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "modifiedon",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "priority",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "status",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "duedate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "direction",
+				"type": "bit"
+			},
+			{
+				"name": "regardinglead",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "regardingopportunity",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Activities_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,23 @@
+{
+	"name": "Dataflow1",
+	"properties": {
+		"folder": {
+			"name": "2_STG_to_DWH"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "STGActivities"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "source(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGActivities"
+		}
+	}
+}
