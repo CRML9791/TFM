@@ -6,7 +6,7 @@
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
 			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=rmltfmsqlserver.database.windows.net;initial catalog=STG;user id=Sqladminuser",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VANEUzMjIxM0YtQkQwNy00OTRDLUJGODItOTM4RDM4RjZFMzZBXzRhMTY2YmFiLWVmZmMtNDk0Ny1iYjdhLWJkZTljNWNlOTU2NSINCn0="
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VAQUJGMEU3RjMtM0VENy00RkZBLUI3MDQtRTY1QUEzQ0NGNUZCX2YyNDRmMTY0LTY5MTYtNDk5Yi05YzRiLTVmMDczODk5ODNjZiINCn0="
 		},
 		"connectVia": {
 			"referenceName": "AutoResolveIntegrationRuntime",
