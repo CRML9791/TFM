@@ -2,7 +2,7 @@
 	"name": "ParquetAppointments",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureDataLakeStorage6",
+			"referenceName": "rmltfmworkspace61-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
