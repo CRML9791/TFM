@@ -1,5 +1,5 @@
 {
-	"name": "Copy Parquet to STG Emails",
+	"name": "Copy Parquet to STG 3 Emails",
 	"properties": {
 		"activities": [
 			{

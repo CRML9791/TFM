@@ -52,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Copy Parquet to STG Emails",
+						"referenceName": "Copy Parquet to STG 3 Emails",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -261,7 +261,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Copy Parquet to STG Tasks",
+						"referenceName": "Copy Parquet to STG 4 Tasks",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
