@@ -1,5 +1,5 @@
 {
-	"name": "Dataflow1",
+	"name": "STG_to_DWH_Activities",
 	"properties": {
 		"folder": {
 			"name": "2_STG_to_DWH"
@@ -13,11 +13,43 @@
 						"type": "DatasetReference"
 					},
 					"name": "STGActivities"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "DWHActivities"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
-			"script": "source(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGActivities"
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "Nuevo"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Activities",
+						"type": "DatasetReference"
+					},
+					"name": "Actualiza"
+				}
+			],
+			"transformations": [
+				{
+					"name": "HASHSTG"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "ConditionalSplit1"
+				}
+			],
+			"script": "source(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\tBK_activityid as string,\n\t\townerid as string,\n\t\tregardingid as string,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGActivities\nsource(output(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DWHActivities\nSTGActivities derive(HASHSTG = crc32(512,upper(toString(ownerid)),toString(status),toString(duedate),toString(priority),toString(duration),toString(modifiedon),toString(activitytype))) ~> HASHSTG\nHASHSTG, DWHActivities lookup(STGActivities@SK_activityid == DWHActivities@SK_activityid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 split(isNull(DWHActivities@HASHKEY),\n\tHASHSTG!=DWHActivities@HASHKEY,\n\tdisjoint: false) ~> ConditionalSplit1@(Nuevos, Actualizaciones, Nada)\nConditionalSplit1@Nuevos sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Nuevo\nConditionalSplit1@Actualizaciones sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\tSK_activityid as integer,\n\t\tactivitytype as integer,\n\t\tHASHKEY as long,\n\t\townerid as integer,\n\t\tduration as integer,\n\t\tmodifiedon as timestamp,\n\t\tpriority as integer,\n\t\tstatus as integer,\n\t\tduedate as timestamp,\n\t\tdirection as boolean,\n\t\tregardinglead as integer,\n\t\tregardingopportunity as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Actualiza"
 		}
 	}
 }
