@@ -35,6 +35,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG 2 Appointment",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			},
@@ -144,6 +148,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy Parquet to STG 1 PhoneCalls",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			},
