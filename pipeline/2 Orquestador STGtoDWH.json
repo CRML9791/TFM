@@ -7,7 +7,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Appointments",
+						"activity": "ParquetToSTG Leads",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -27,7 +27,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Goals",
+						"activity": "ParquetToSTG PhoneCalls",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -47,7 +47,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG PhoneCalls",
+						"activity": "ParquetToSTG Appointments",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -65,14 +65,7 @@
 			{
 				"name": "ParquetToSTG Goals",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "ParquetToSTG Opportunities",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -87,7 +80,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG ProductFamilies",
+						"activity": "ParquetToSTG Territories",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -105,7 +98,14 @@
 			{
 				"name": "ParquetToSTG Opportunities",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG Accounts",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -120,7 +120,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Territories",
+						"activity": "ParquetToSTG Opportunities",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -140,7 +140,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG SystemUsers",
+						"activity": "ParquetToSTG OpportunityProducts",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -160,7 +160,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Emails",
+						"activity": "ParquetToSTG SystemUsers",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -180,7 +180,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG OpportunityProducts",
+						"activity": "ParquetToSTG ProductFamilies",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -200,7 +200,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Accounts",
+						"activity": "ParquetToSTG Goals",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -220,7 +220,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Product",
+						"activity": "ParquetToSTG SystemManagers",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -240,7 +240,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG Task",
+						"activity": "ParquetToSTG Product",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -260,7 +260,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ParquetToSTG SystemManagers",
+						"activity": "ParquetToSTG Emails",
 						"dependencyConditions": [
 							"Completed"
 						]
