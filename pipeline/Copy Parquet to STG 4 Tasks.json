@@ -1,5 +1,5 @@
 {
-	"name": "Copy Parquet to STG Tasks",
+	"name": "Copy Parquet to STG 4 Tasks",
 	"properties": {
 		"activities": [
 			{
@@ -36,7 +36,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "RAW_to_STG_Task",
+						"referenceName": "RAW_to_STG_4_Task_New",
 						"type": "DataFlowReference"
 					},
 					"compute": {
