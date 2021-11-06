@@ -17969,7 +17969,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "CREATE DATABASE LSTG\n      COLLATE Latin1_General_100_BIN2_UTF8;\n      ",
+					"query": "CREATE DATABASE L_STG\n      COLLATE Latin1_General_100_BIN2_UTF8;\n",
 					"metadata": {
 						"language": "sql"
 					},
