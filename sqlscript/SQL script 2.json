@@ -2,7 +2,7 @@
 	"name": "SQL script 2",
 	"properties": {
 		"content": {
-			"query": "CREATE DATABASE Ldw\n      COLLATE Latin1_General_100_BIN2_UTF8;",
+			"query": "CREATE DATABASE LSTG\n      COLLATE Latin1_General_100_BIN2_UTF8;\n      ",
 			"metadata": {
 				"language": "sql"
 			},
