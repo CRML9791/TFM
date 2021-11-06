@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 8",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'tfmfiles_rmlaccountdatalake_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [tfmfiles_rmlaccountdatalake_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION   = 'https://rmlaccountdatalake.dfs.core.windows.net/tfmfiles', \n\t)\nGo\n\nCREATE EXTERNAL TABLE accounts (\n\t[originatingleadid] varchar(8000),\n\t[revenue] numeric(38,18),\n\t[industrycode] int,\n\t[numberofemployees] int,\n\t[accountid] varchar(8000),\n\t[transactioncurrencyid] varchar(8000),\n\t[ownerid] varchar(8000),\n\t[modifiedon] datetime2(7),\n\t[territoryid] varchar(8000),\n\t[createdon] datetime2(7),\n\t[name] varchar(8000)\n\t)\n\tWITH (\n\tLOCATION = 'accounts/*.parquet',\n\tDATA_SOURCE = [tfmfiles_rmlaccountdatalake_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\nSELECT TOP 100 * FROM accounts\nGO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "L_STG",
+				"poolName": "Built-in"
+			},
+			"resultLimit": -1
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -7,7 +7,7 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "L_STG",
+				"databaseName": "default",
 				"poolName": "Built-in"
 			},
 			"resultLimit": -1
