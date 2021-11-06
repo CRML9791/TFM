@@ -2,12 +2,12 @@
 	"name": "SQL script 2",
 	"properties": {
 		"content": {
-			"query": "CREATE DATABASE LSTG\n      COLLATE Latin1_General_100_BIN2_UTF8;\n      ",
+			"query": "CREATE DATABASE L_STG\n      COLLATE Latin1_General_100_BIN2_UTF8;\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "Ldw",
+				"databaseName": "master",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
