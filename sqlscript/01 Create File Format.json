@@ -1,0 +1,17 @@
+{
+	"name": "01 Create File Format",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL FILE FORMAT ParquetFormat WITH\n(\n\tFORMAT_TYPE = PARQUET\n)\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "L_STG",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
