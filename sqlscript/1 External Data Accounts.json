@@ -1,16 +1,16 @@
 {
-	"name": "SQL script 5",
+	"name": "1 External Data Accounts",
 	"properties": {
 		"content": {
-			"query": "\nCREATE EXTERNAL DATA SOURCE ecdc_cases WITH (\n    LOCATION = 'https://rmlaccountdatalake.dfs.core.windows.net/tfmfiles/accounts/**'\n);\n\n\n",
+			"query": "\nCREATE EXTERNAL DATA SOURCE parquet_accounts WITH (\n    LOCATION = 'https://rmlaccountdatalake.dfs.core.windows.net/tfmfiles/accounts/**'\n);\n\n\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "Ldw",
+				"databaseName": "L_STG",
 				"poolName": "Built-in"
 			},
-			"resultLimit": 5000
+			"resultLimit": -1
 		},
 		"type": "SqlQuery"
 	}

@@ -1,5 +1,5 @@
 {
-	"name": "SQL script 2",
+	"name": "0 Create database",
 	"properties": {
 		"content": {
 			"query": "CREATE DATABASE L_STG\n      COLLATE Latin1_General_100_BIN2_UTF8;\n",
