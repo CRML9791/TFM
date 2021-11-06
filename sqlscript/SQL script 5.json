@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 5",
+	"properties": {
+		"content": {
+			"query": "\nCREATE EXTERNAL DATA SOURCE ecdc_cases WITH (\n    LOCATION = 'https://rmlaccountdatalake.dfs.core.windows.net/tfmfiles/accounts/**'\n);\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Ldw",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
