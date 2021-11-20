@@ -1,0 +1,1 @@
+Nº Total Actividades = COUNTROWS('Facts Actividades')
