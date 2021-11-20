@@ -1,0 +1,29 @@
+  let
+    Source = List.Times(#time(0, 0, 0), 1440, #duration(0,0,1,0)),
+    TableFromList = Table.FromList(Source, Splitter.SplitByNothing()), 
+    ChangedType = Table.TransformColumnTypes(TableFromList,{{"Column1", type time}}),
+    RenamedColumns = Table.RenameColumns(ChangedType,{{"Column1", "Tiempo"}}),
+    
+    //Número de hora
+    InsertHourNumber = Table.AddColumn(RenamedColumns, "Hora", each Time.Hour([Tiempo]), Int64.Type), 
+   
+    //Número de minuto
+    InsertMinute = Table.AddColumn(InsertHourNumber, "Minutos", each Time.Minute([Tiempo]), Int64.Type),
+  
+    //Parte del día
+    InsertPeriod = Table.AddColumn(InsertMinute, "PartesdelDía", each 
+      if [Hora] >= 0 and [Hora] < 6 then "Madrugada" 
+      else if [Hora] >= 6 and [Hora] < 12 then "Mañana" 
+      else if [Hora] >= 12 and [Hora] < 19 then "Tarde" 
+      else if [Hora] >= 19 and [Hora] < 0 then "Noche"
+      else "?",
+    type text),  
+
+  //Horas de trabajo
+  InsertWorkingHours = Table.AddColumn(InsertPeriod, "HorasTrabajo", each 
+      if [Hora] >= 8 and [Hora] < 17 then "Normal" 
+      else if [Hora] >= 17 and [Hora] < 21 then "Extra" 
+      else null, 
+    type text)
+  in
+  InsertWorkingHours
