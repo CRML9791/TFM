@@ -1,0 +1,12 @@
+AVG Cantidad de Productos Oportunidades = 
+VAR CANT =
+    SUMX (
+        SUMMARIZE (
+            'Facts Oportunidad',
+            'Facts Oportunidad'[opportunityid],
+            'Facts Oportunidad'[Cantidad]
+        ),
+        'Facts Oportunidad'[Cantidad]
+    )
+RETURN
+    DIVIDE ( CANT, [Nº Total Oportunidades] )
