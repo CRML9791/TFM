@@ -1,0 +1,4 @@
+Nº Actividades Oportunidades = CALCULATE(
+    [Nº Total Actividades],
+        TREATAS(VALUES('Facts Oportunidad'[opportunityid]),'Facts Actividades'[Referente]
+))
