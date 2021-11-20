@@ -1,0 +1,14 @@
+let
+    #"Dim Prioridad" = #table(
+        type table [
+            #"Prioridad"=text,
+            #"SK_Prioridad"=Int64.Type
+        ],
+
+{
+{"Baja",0},
+{"Normal",1},
+{"Alta",2}
+})
+in
+    #"Dim Prioridad"
