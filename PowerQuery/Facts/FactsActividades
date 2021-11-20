@@ -1,0 +1,18 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_activitypointer = Source{[Schema="dbo",Item="activitypointer"]}[Data],
+    #"Removed Other Columns" = Table.SelectColumns(dbo_activitypointer,{"activityid", "activitytypecode", "scheduledend", "actualdurationminutes", "ownerid", "prioritycode", "regardingobjectid"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"actualdurationminutes", "Duración"}, {"ownerid", "Propietario"},  {"scheduledend","Fecha"},{"prioritycode", "Prioridad"}, {"activitytypecode","Tipo Actividad"},{"regardingobjectid", "Referente"}}),
+    #"Merged Queries1" = Table.NestedJoin(#"Renamed Columns", {"activityid"}, Llamadas, {"activityid"}, "Llamadas", JoinKind.LeftOuter),
+    #"Expanded Llamadas" = Table.ExpandTableColumn(#"Merged Queries1", "Llamadas", {"directioncode"}, {"Sentido"}),
+    #"Sorted Rows" = Table.Sort(#"Expanded Llamadas",{{"Referente", Order.Ascending}, {"Tipo Actividad", Order.Ascending}, {"Fecha", Order.Ascending}}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Sorted Rows",{{"Sentido", Int64.Type}}),
+    #"Added Custom1" = Table.AddColumn(#"Changed Type1", "Hora ", each Time.From([Fecha]), type time),
+    #"Changed Type2" = Table.TransformColumnTypes(#"Added Custom1",{{"Fecha", type date}}),
+    #"Added Index" = Table.AddIndexColumn(#"Changed Type2", "Index", 1, 1, Int64.Type),
+    #"Merged Queries" = Table.NestedJoin(#"Added Index", {"Referente", "Tipo Actividad", "Index"}, #"Refs Actividades", {"regardingobjectid", "activitytypecode", "Index"}, "Refs Actividades", JoinKind.LeftOuter),
+    #"Expanded Refs Actividades" = Table.ExpandTableColumn(#"Merged Queries", "Refs Actividades", {"scheduledend"}, {"scheduledend"}),
+    #"Inserted Date Subtraction" = Table.AddColumn(#"Expanded Refs Actividades", "FollowUp", each Duration.Days([Fecha] - [scheduledend]), Int64.Type),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Inserted Date Subtraction",{"Tipo Actividad", "Fecha", "Duración", "Propietario", "Prioridad", "Referente", "Sentido", "Hora ", "FollowUp"})
+in
+    #"Removed Other Columns1"
