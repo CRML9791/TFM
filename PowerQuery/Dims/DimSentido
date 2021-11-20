@@ -1,0 +1,13 @@
+let
+    #"Dim Sentido" = #table(
+        type table [
+            #"Sentido"=text,
+            #"SK_Sentido"=Int64.Type
+        ],
+
+{
+{"Entante",0},
+{"Saliente",1}
+})
+in
+    #"Dim Sentido"
