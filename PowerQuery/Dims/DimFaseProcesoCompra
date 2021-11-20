@@ -1,0 +1,10 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_processstage = Source{[Schema="dbo",Item="processstage"]}[Data],
+    #"Filtered Rows" = Table.SelectRows(dbo_processstage, each ([processid] = "919E14D1-6489-4852-ABD0-A63A6ECAAC5D")),
+    #"Added Conditional Column" = Table.AddColumn(#"Filtered Rows", "SK_Stage", each if [stagename] = "qualify" then 1 else if [stagename] = "develop" then 2 else if [stagename] = "propose" then 3 else if [stagename] = "close" then 4 else null, Int64.Type),
+    #"Removed Other Columns" = Table.SelectColumns(#"Added Conditional Column",{"processstageid", "stagename", "SK_Stage"}),
+    #"Sorted Rows" = Table.Sort(#"Removed Other Columns",{{"SK_Stage", Order.Ascending}}),
+    #"Renamed Columns" = Table.RenameColumns(#"Sorted Rows",{{"stagename", "Fase BPF"}})
+in
+    #"Renamed Columns"
