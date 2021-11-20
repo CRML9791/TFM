@@ -1,0 +1,5 @@
+AVG Lineas Oportunidad = 
+DIVIDE (
+    DISTINCTCOUNT ( 'Facts Oportunidad'[opportunityproductid] ),
+    [Nº Total Oportunidades]
+)
