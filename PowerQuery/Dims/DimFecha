@@ -1,0 +1,13 @@
+let
+    Inicio = Date.StartOfYear(List.Min(#"Facts Clientes Potenciales"[#"Fecha de Creación"])),
+    Fin = Date.EndOfMonth(List.Max(#"Facts Oportunidades"[#"Fecha de Modificación"])),
+    #"Lista Fechas" = List.Dates(Inicio,Number.From(Fin)-Number.From(Inicio)+1,#duration(1,0,0,0)),
+    #"Tabla Fechas" = Table.FromList(#"Lista Fechas",Splitter.SplitByNothing(),null,null,ExtraValues.Error),
+    #"Tipo Date" = Table.TransformColumnTypes(#"Tabla Fechas",{{"Column1", type date}}),
+    #"Nombre Fecha" = Table.RenameColumns(#"Tipo Date",{{"Column1", "Fecha"}}),
+    #"Año" = Table.AddColumn(#"Nombre Fecha", "Año", each Date.Year([Fecha]),Int64.Type),
+    #"Mes" = Table.AddColumn(Año, "Mes", each Date.Month([Fecha]),Int64.Type),
+    #"Día" = Table.AddColumn(Mes, "Día", each Date.Day([Fecha]),Int64.Type),
+    #"Inserted Month Name" = Table.AddColumn(Día, "Nom Mes", each Date.MonthName([Fecha]), type text)
+in
+    #"Inserted Month Name"
