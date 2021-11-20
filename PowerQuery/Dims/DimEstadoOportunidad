@@ -1,0 +1,17 @@
+let
+    #"Dim Estatus Oportunidad" = #table(
+        type table [
+            #"Razón Estado"=text,
+            #"SK_Estado"=Int64.Type,
+            #"Estado"=text
+        ],
+
+{
+{"En Progreso",1,"Abierta"},
+{"En Espera",2,"Abierta"},
+{"Ganada",3,"Cerrada"},
+{"Cancelada",4,"Cerrada"},
+{"Vendida",5,"Cerrada"}
+})
+in
+    #"Dim Estatus Oportunidad"
