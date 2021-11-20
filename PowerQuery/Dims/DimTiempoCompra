@@ -1,0 +1,16 @@
+let
+    #"Dim Tiempo de Compra" = #table(
+        type table [
+            #"Tiempo de Compra"=text,
+            #"SK_TiempoCompra"=Int64.Type
+        ],
+
+{
+{"Inmediatamente",0},
+{"Este trimestre",1},
+{"Trimestre siguiente",2},
+{"Este Año",3},
+{"Desconocido",4}
+})
+in
+    #"Dim Tiempo de Compra"
