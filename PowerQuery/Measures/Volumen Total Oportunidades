@@ -1,0 +1,10 @@
+Volumen Total Oportunidades =
+SUMX (
+    SUMMARIZE (
+        'Facts Oportunidad',
+        'Facts Oportunidad'[opportunityid],
+        'Facts Oportunidad'[Importe],
+        'Facts Oportunidad'[Estatus]
+    ),
+    'Facts Oportunidad'[Importe]
+)
