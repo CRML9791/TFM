@@ -1,0 +1,1 @@
+Nº Total Clientes Potenciales Calificados = COUNTROWS(FILTER('Facts Clientes Potenciales','Facts Clientes Potenciales'[Razón Estado]=3))
