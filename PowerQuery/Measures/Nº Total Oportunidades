@@ -1,0 +1,2 @@
+Nº Total Oportunidades = 
+DISTINCTCOUNT('Facts Oportunidad'[opportunityid])
