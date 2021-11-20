@@ -1,0 +1,8 @@
+Obj Nº Lead Nuevos =
+SUMX (
+    FILTER (
+        'Dim Objetivos',
+        'Dim Objetivos'[metricidname] = "Nº Clientes Potenciales Nuevos"
+    ),
+    'Dim Objetivos'[Objetivo Número]
+)
