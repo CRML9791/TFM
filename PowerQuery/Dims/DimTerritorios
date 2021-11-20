@@ -1,0 +1,14 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_product = Source{[Schema="dbo",Item="territory"]}[Data],
+    #"Removed Other Columns" = Table.SelectColumns(dbo_product,{"territoryid", "name", "parentterritoryid"}),
+    #"Merged Queries" = Table.NestedJoin(#"Removed Other Columns", {"parentterritoryid"}, #"Removed Other Columns", {"territoryid"}, "Removed Other Columns", JoinKind.LeftOuter),
+    #"Expanded Removed Other Columns" = Table.ExpandTableColumn(#"Merged Queries", "Removed Other Columns", {"territoryid", "name", "parentterritoryid"}, {"Removed Other Columns.territoryid", "Removed Other Columns.name", "Removed Other Columns.parentterritoryid"}),
+    #"Merged Queries1" = Table.NestedJoin(#"Expanded Removed Other Columns", {"Removed Other Columns.parentterritoryid"}, #"Expanded Removed Other Columns", {"territoryid"}, "Expanded Removed Other Columns", JoinKind.LeftOuter),
+    #"Expanded Expanded Removed Other Columns" = Table.ExpandTableColumn(#"Merged Queries1", "Expanded Removed Other Columns", {"name"}, {"Expanded Removed Other Columns.name"}),
+    #"Filtered Rows" = Table.SelectRows(#"Expanded Expanded Removed Other Columns", each [Expanded Removed Other Columns.name] = "Spain"),
+    #"Inserted Merged Column" = Table.AddColumn(#"Filtered Rows", "Dirección", each Text.Combine({[name], ", ", [Removed Other Columns.name], ", ", [Expanded Removed Other Columns.name]}), type text),
+    #"Renamed Columns" = Table.RenameColumns(#"Inserted Merged Column",{{"Removed Other Columns.name", "CCAA"}, {"Expanded Removed Other Columns.name", "Pais"}, {"name", "Provincia"}}),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Renamed Columns",{"territoryid", "Provincia", "CCAA", "Pais", "Dirección"})
+in
+    #"Removed Other Columns1"
