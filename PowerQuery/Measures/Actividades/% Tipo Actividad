@@ -1,0 +1,6 @@
+% Tipo Actividad = 
+    DIVIDE(
+        [Nº Total Actividades],
+        CALCULATE(COUNTROWS(ALL('Facts Actividades'))
+        )
+)
