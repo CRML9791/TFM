@@ -1,0 +1,1 @@
+Avg Agging Cliente Potencial = AVERAGE('Facts Clientes Potenciales'[Agging])
