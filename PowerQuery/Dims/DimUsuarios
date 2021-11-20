@@ -1,0 +1,12 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_product = Source{[Schema="dbo",Item="systemuser"]}[Data],
+    #"Filtered Rows" = Table.SelectRows(dbo_product, each Text.StartsWith([firstname], "0")),
+    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"systemuserid", "parentsystemuserid", "lastname"}),
+    #"Merged Queries" = Table.NestedJoin(#"Removed Other Columns", {"parentsystemuserid"}, #"Removed Other Columns", {"systemuserid"}, "Removed Other Columns", JoinKind.LeftOuter),
+    #"Expanded Removed Other Columns" = Table.ExpandTableColumn(#"Merged Queries", "Removed Other Columns", {"lastname"}, {"Manager"}),
+    #"Filtered Rows1" = Table.SelectRows(#"Expanded Removed Other Columns", each ([parentsystemuserid] <> null)),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Filtered Rows1",{"systemuserid", "lastname", "Manager"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns1",{{"lastname", "Usuario"}})
+in
+    #"Renamed Columns"
