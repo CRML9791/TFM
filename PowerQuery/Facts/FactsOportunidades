@@ -1,0 +1,10 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_product = Source{[Schema="dbo",Item="opportunityproduct"]}[Data],
+    #"Removed Other Columns" = Table.SelectColumns(dbo_product,{"opportunityproductid", "extendedamount", "opportunityid", "priceperunit", "productid", "quantity"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{ {"extendedamount", "Importe"}, {"priceperunit", "Precio"}, {"quantity", "Cantidad"}}),
+    #"Merged Queries" = Table.NestedJoin(#"Renamed Columns", {"opportunityid"}, #"Facts Oportunidades", {"opportunityid"}, "Facts Oportunidades", JoinKind.LeftOuter),
+    #"Expanded Facts Oportunidades" = Table.ExpandTableColumn(#"Merged Queries", "Facts Oportunidades", {"ownerid", "Probabilidad", "Rating", "Cuenta", "Tiempo de Compra", "Estatus", "Fecha de Creación", "Fecha de Modificación", "SK_Stage"}, {"ownerid", "Probabilidad", "Rating", "Cuenta", "Tiempo de Compra", "Estatus", "Fecha de Creación", "Fecha de Modificación", "SK_Stage"}),
+    #"Inserted Date Subtraction" = Table.AddColumn(#"Expanded Facts Oportunidades", "Agging", each Duration.Days([Fecha de Modificación] - [Fecha de Creación]), Int64.Type)
+in
+    #"Inserted Date Subtraction"
