@@ -1,0 +1,4 @@
+AVG FollowUp Clientes Potenciales = CALCULATE(
+    Medidas[AVG FollowUp Actividades],
+        TREATAS(VALUES('Facts Clientes Potenciales'[leadid]),'Facts Actividades'[Referente]
+))
