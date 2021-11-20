@@ -1,0 +1,9 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_activitypointer = Source{[Schema="dbo",Item="activitypointer"]}[Data],
+    #"Removed Other Columns" = Table.SelectColumns(dbo_activitypointer,{"activitytypecode", "scheduledend", "regardingobjectid"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"scheduledend", type date}}),
+    #"Sorted Rows" = Table.Sort(#"Changed Type",{{"regardingobjectid", Order.Ascending}, {"activitytypecode", Order.Ascending}, {"scheduledend", Order.Ascending}}),
+    #"Added Index" = Table.AddIndexColumn(#"Sorted Rows", "Index", 2, 1, Int64.Type)
+in
+    #"Added Index"
