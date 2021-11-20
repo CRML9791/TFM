@@ -1,0 +1,1 @@
+Duración Total Actividades (mm) = SUM('Facts Actividades'[Duración])
