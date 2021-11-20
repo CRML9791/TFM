@@ -1,0 +1,8 @@
+Obj Vol Opp Ganadas =
+SUMX (
+    FILTER (
+        'Dim Objetivos',
+        'Dim Objetivos'[metricidname] = "Opportunity Line Vol"
+    ),
+    'Dim Objetivos'[Objetivo Moneda]
+)
