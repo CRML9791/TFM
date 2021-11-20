@@ -1,0 +1,44 @@
+let
+    #"Dim Sector Industrial" = #table(
+        type table [
+            #"Sector Industrial"=text,
+            #"SK_Sector"=Int64.Type
+        ],
+
+{
+{"Contabilidad",1},
+{"Agricultura y extracción de recursos naturales excepto petróleo",2},
+{"Emisión, impresión y publicación",3},
+{"Agentes de bolsa",4},
+{"Almacén de materiales de construcción",5},
+{"Servicios empresariales",6},
+{"Consultoría",7},
+{"Servicios al consumidor",8},
+{"Diseño, dirección y administración creativa",9},
+{"Distribuidores y procesadores",10},
+{"Consultas médicas y clínicas",11},
+{"Fabricación de artículos no perecederos",12},
+{"Establecimientos de comida y bebida",13},
+{"Establecimientos de entretenimiento",14},
+{"Alquiler y leasing de equipo",15},
+{"Actividades financieras",16},
+{"Procesamiento de comida y tabaco",17},
+{"Procesamiento intensivo de capital entrante",18},
+{"Servicios y reparación entrante",19},
+{"Compañías aseguradores",20},
+{"Servicios legales",21},
+{"Venta al por menor de mercancías perecederas",22},
+{"Servicios al consumidor de origen",23},
+{"Extracción y distribución petroquímica",24},
+{"Servicios al por menor",25},
+{"Grupo de industrias estratégicas",26},
+{"Servicios sociales",27},
+{"Contratistas de comercio exterior especial",28},
+{"Agencias inmobiliarias",29},
+{"Transporte",30},
+{"Creación y distribución de herramientas",31},
+{"Concesionario de vehículos",32},
+{"Comercio al por mayor",33}
+})
+in
+    #"Dim Sector Industrial"
