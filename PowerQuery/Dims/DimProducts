@@ -1,0 +1,13 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_product = Source{[Schema="dbo",Item="product"]}[Data],
+    #"Filtered Rows" = Table.SelectRows(dbo_product, each Text.StartsWith([name], "TFM-")),
+    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"productid", "name", "parentproductid", "standardcost"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"name", "Producto"}, {"standardcost", "Precio"}}),
+    #"Merged Queries" = Table.NestedJoin(#"Renamed Columns", {"parentproductid"}, #"Renamed Columns", {"productid"}, "Dim Familias de Productos", JoinKind.LeftOuter),
+    #"Expanded Dim Familias de Productos" = Table.ExpandTableColumn(#"Merged Queries", "Dim Familias de Productos", {"Producto"}, {"Familia"}),
+    #"Filtered Rows1" = Table.SelectRows(#"Expanded Dim Familias de Productos", each ([Familia] <> null)),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Filtered Rows1",{"productid", "Producto", "Precio", "Familia"}),
+    #"Sorted Rows" = Table.Sort(#"Removed Other Columns1",{{"Producto", Order.Ascending}})
+in
+    #"Sorted Rows"
