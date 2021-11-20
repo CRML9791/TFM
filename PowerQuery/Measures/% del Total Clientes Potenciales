@@ -1,0 +1,5 @@
+% del Total Clientes Potenciales =
+DIVIDE (
+    [Nº Total Clientes Potenciales],
+    CALCULATE ( COUNTROWS ( ALL ( 'Facts Clientes Potenciales' ) ) )
+)
