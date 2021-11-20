@@ -1,0 +1,3 @@
+AVG Duración(mm) Clientes Potenciales = CALCULATE(
+    Medidas[AVG Duración Actividades],
+        TREATAS(VALUES('Facts Clientes Potenciales'[leadid]),'Facts Actividades'[Referente]))
