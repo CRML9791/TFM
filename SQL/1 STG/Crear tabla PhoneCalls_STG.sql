@@ -1,0 +1,23 @@
+CREATE TABLE [PhoneCalss_STG]( 
+
+[activitytype] int CONSTRAINT activitytype_type default((1)),
+[HASHKEY] bigint,
+[BK_activityid] uniqueidentifier NOT NULL, 
+[ownerid] uniqueidentifier NOT NULL,
+[regardingid] uniqueidentifier NOT NULL,
+[duration] tinyint,
+[direction] bit,
+[modifiedon] datetime,
+[priority] tinyint,
+[status] tinyint,
+[duedate] datetime,
+
+
+PRIMARY KEY CLUSTERED  
+( 
+[BK_activityid] ASC 
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY] 
+
+) ON [PRIMARY] 
+
+GO 
