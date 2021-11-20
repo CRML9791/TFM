@@ -1,0 +1,4 @@
+Duración(mm) Oportunidades = CALCULATE(
+    Medidas[Duración Total Actividades (mm)],
+        TREATAS(VALUES('Facts Oportunidad'[opportunityid]),'Facts Actividades'[Referente]
+))
