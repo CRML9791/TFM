@@ -1,0 +1,4 @@
+Avg FollowUp Oportunidades = CALCULATE(
+    Medidas[AVG FollowUp Actividades],
+        TREATAS(VALUES('Facts Oportunidad'[opportunityid]),'Facts Actividades'[Referente]
+))
