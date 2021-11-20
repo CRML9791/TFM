@@ -1019,6 +1019,81 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Big-O')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Dataverse to Parquet",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "0 Orquestador DataverseParquet",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ParquetToSTG",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Dataverse to Parquet",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "1 Orquestador ParquetToSTG",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "STGtoDWH",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ParquetToSTG",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "2 Orquestador STGtoDWH",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/0 Orquestador DataverseParquet')]",
+				"[concat(variables('workspaceId'), '/pipelines/1 Orquestador ParquetToSTG')]",
+				"[concat(variables('workspaceId'), '/pipelines/2 Orquestador STGtoDWH')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Copy Parquet to STG 1 PhoneCalls')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
