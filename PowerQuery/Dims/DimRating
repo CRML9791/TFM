@@ -1,0 +1,14 @@
+let
+    #"Dim Rating" = #table(
+        type table [
+            #"Rating"=text,
+            #"SK_Rating"=Int64.Type
+        ],
+
+{
+{"Hot",1},
+{"Warm",2},
+{"Cold",3}
+})
+in
+    #"Dim Rating"
