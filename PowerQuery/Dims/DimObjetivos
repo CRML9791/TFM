@@ -1,0 +1,9 @@
+let
+    Source = CommonDataService.Database(CRM),
+    dbo_goal = Source{[Schema="dbo",Item="goal"]}[Data],
+    #"Filtered Rows" = Table.SelectRows(dbo_goal, each ([statuscode] = 0)),
+    #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows",{{"createdon", type date}, {"goalstartdate", type date}, {"goalenddate", type date}}),
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"title", "Objetivo"}, {"statuscode", "Estatus"}, {"goalstartdate", "Fecha Inicio"}, {"goalenddate", "Fecha Fin"}, {"targetmoney", "Objetivo Moneda"}, {"targetinteger", "Objetivo Número"}}),
+    #"Removed Other Columns" = Table.SelectColumns(#"Renamed Columns",{"Objetivo", "Fecha Fin", "metricidname", "Objetivo Moneda", "Objetivo Número"})
+in
+    #"Removed Other Columns"
