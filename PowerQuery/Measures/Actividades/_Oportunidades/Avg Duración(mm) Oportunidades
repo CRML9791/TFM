@@ -1,0 +1,4 @@
+Avg Duración(mm) Oportunidades = CALCULATE(
+    Medidas[AVG Duración Actividades],
+        TREATAS(VALUES('Facts Oportunidad'[opportunityid]),'Facts Actividades'[Referente]
+))
