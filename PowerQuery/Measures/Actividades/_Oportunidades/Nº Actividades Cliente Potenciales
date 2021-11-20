@@ -1,5 +1,0 @@
-Nº Actividades Cliente Potenciales = CALCULATE(
-    [Nº Total Actividades],
-        TREATAS(
-            VALUES('Facts Clientes Potenciales'[leadid]),'Facts Actividades'[Referente]
-    ))
