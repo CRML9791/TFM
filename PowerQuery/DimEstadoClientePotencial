@@ -1,0 +1,18 @@
+let
+    #"Dim Estatus Lead" = #table(
+        type table [
+            #"SK_Estado"=Int64.Type,
+            #"Estado"=text,
+            #"Razón Estado"=text     
+        ],
+{
+{1,"Abierto","Nuevo"},
+{2,"Abierto","Contactado"},
+{3,"Calificado","Calificado"},
+{4,"Cerrado","Perdido"},
+{5,"Cerrado","No se puede contactar"},
+{6,"Cerrado","No está interesado"},
+{7,"Cerrado","Cacelado"}
+})
+in
+    #"Dim Estatus Lead"
