@@ -1,1 +1,0 @@
-Duración(hh) Clientes Potenciales = DIVIDE([Duración(mm) Clientes Potenciales],60)
