@@ -1,0 +1,1 @@
+Duración(hh) Oportunidades = DIVIDE([Duración(mm) Oportunidades],60)
