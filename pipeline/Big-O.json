@@ -1,0 +1,61 @@
+{
+	"name": "Big-O",
+	"properties": {
+		"activities": [
+			{
+				"name": "Dataverse to Parquet",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0 Orquestador DataverseParquet",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ParquetToSTG",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Dataverse to Parquet",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1 Orquestador ParquetToSTG",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "STGtoDWH",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ParquetToSTG",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2 Orquestador STGtoDWH",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
