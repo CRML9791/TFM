@@ -1,0 +1,40 @@
+let
+    #"Dim Tipo Actividad" = #table(
+        type table [
+            #"Tipo de Actividad"=text,
+            #"SK_Tipo Actividad"=Int64.Type
+        ],
+
+{
+    {"Fax",4204},
+    {"Llamada de teléfono",4210},
+    {"Correo electrónico",4202},
+    {"Carta",4207},
+    {"Cita",4201},
+    {"Tarea",4212},
+    {"Cita periódica",4251},
+    {"Campaña exprés",4406},
+    {"Actividad de la campaña",4402},
+    {"Respuesta de campaña",4401},
+    {"Resolución del caso",4206},
+    {"Actividad de servicio",4214},
+    {"Cierre de oportunidad",4208},
+    {"Cierre de pedido",4209},
+    {"Cierre de oferta",4211},
+    {"Alerta de reserva",10014},
+    {"Aprobación",10039},
+    {"Suscripción de alerta",10213},
+    {"Canje de invitación",10216},
+    {"Comentario del portal",10284},
+    {"Actividad de chat",10330},
+    {"Actividad de la encuesta",10380},
+    {"Invitación de encuesta",10448},
+    {"Respuesta de encuesta",10449},
+    {"InMail",10486},
+    {"Mensaje",10487},
+    {"Presentación de PointDrive vista",10488},
+    {"Alerta de Customer Voice",10810}
+
+})
+in
+    #"Dim Tipo Actividad"
