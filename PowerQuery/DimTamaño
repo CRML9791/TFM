@@ -1,0 +1,15 @@
+let
+    #"Dim Tamaño" = #table(
+        type table [
+            #"Tamaño"=text,
+            #"SK_Tamaño"=Int64.Type
+        ],
+
+{
+{"Micro",1},
+{"Pequeña",2},
+{"Mediana",3},
+{"Grande",4}
+})
+in
+    #"Dim Tamaño"
