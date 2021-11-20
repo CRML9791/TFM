@@ -1,0 +1,2 @@
+AVG Duración Actividades =
+DIVIDE ( Medidas[Duración Total Actividades (mm)], [Nº Total Actividades] )
