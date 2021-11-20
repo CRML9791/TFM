@@ -1,0 +1,8 @@
+Obj Nº Opp Ganadas =
+SUMX (
+    FILTER (
+        'Dim Objetivos',
+        'Dim Objetivos'[metricidname] = "Nº Oportunidades Ganadas"
+    ),
+    'Dim Objetivos'[Objetivo Número]
+)
