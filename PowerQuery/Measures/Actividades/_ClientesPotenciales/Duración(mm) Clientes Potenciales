@@ -1,0 +1,4 @@
+Duración(mm) Clientes Potenciales = CALCULATE(
+    Medidas[Duración Total Actividades (mm)],
+        TREATAS(VALUES('Facts Clientes Potenciales'[leadid]),'Facts Actividades'[Referente]
+))
