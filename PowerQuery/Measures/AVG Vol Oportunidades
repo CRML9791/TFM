@@ -1,0 +1,2 @@
+AVG Vol Oportunidades =
+DIVIDE ( [Volumen Total Oportunidades], [Nº Total Oportunidades] )
